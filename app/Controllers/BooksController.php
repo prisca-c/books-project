@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Helpers\QueryHandler;
-use App\Models\Author;
 use App\Models\BookTagRelation;
 use App\Models\Book;
 use App\Models\Tag;
@@ -20,31 +19,12 @@ class BooksController extends Controller
 
     public function index(): array
     {
-        $books = $this->books->findAll();
-        $book_tag_relation_model = new BookTagRelation();
-        $tags_model =  new Tag();
-        $field = 'books_id';
-        foreach ($books as $key => $book) {
-            $tags = $book_tag_relation_model->findAllBy($field, $book['id']);
-            foreach ($tags as $tag) {
-                $books[$key]['tags'][] = $tags_model->findAllBy('id', $tag['tags_id'])[0];
-            }
-        }
-        return $books;
+        return $this->books->findAll();
     }
 
     public function show(array $data): array
     {
-        $id = $data['id'];
-        $book = $this->books->findById($id);
-        $book_tag_relation_model = new BookTagRelation();
-        $tags_model =  new Tag();
-        $field = 'books_id';
-        $tags = $book_tag_relation_model->findAllBy($field, $book['id']);
-        foreach ($tags as $tag) {
-            $book['tags'][] = $tags_model->findAllBy('id', $tag['tags_id'])[0];
-        }
-        return $book;
+        return $this->books->findById($data['id']);
     }
 
     public function store(array $data): void
@@ -63,16 +43,25 @@ class BooksController extends Controller
         $this->books->deleteById($id);
     }
 
-    public function booksByAuthor(array $data): array
+    public function getTags(array $data): array
     {
         $id = $data['id'];
-        $query = $this->books->findAllBy('authors_id', $id);
-        $authors_model = new Author();
-
-        foreach ($query as $key => $book) {
-            $query[$key]['author'] = $authors_model->findById($book['authors_id']);
+        $book_tag_relation_model = new BookTagRelation();
+        $tags_model =  new Tag();
+        $field = 'books_id';
+        $tags = $book_tag_relation_model->findAllBy($field, $id);
+        foreach ($tags as $tag) {
+            $book['tags'][] = $tags_model->findAllBy('id', $tag['tags_id'])[0];
         }
-        return $query;
+        if (empty($book['tags'])) {
+            $book['tags'] = [];
+        }
+        return $book;
+    }
+
+    public function booksByAuthor(array $data): array
+    {
+        return $this->books->findAllBy('authors_id', $data['id']);
     }
 
     public function booksByTagId(array $data): array
