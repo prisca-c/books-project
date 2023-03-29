@@ -53,6 +53,12 @@ class Model
         return $this->query->findAllBy($this->table, $field, $value);
     }
 
+    public function deleteBy(array $data): array
+    {
+        $this->query->deleteBy($this->table, $this->fillable, $data);
+        return $this->response->ok('Deleted');
+    }
+
     public function getFields(): array
     {
         return $this->fillable;
