@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Database\QueryMethods;
 use App\Models\Author;
+use App\Models\Book;
 
 class AuthorsController extends Controller
 {
@@ -25,22 +25,14 @@ class AuthorsController extends Controller
         return $this->author->findById($id);
     }
 
-    public function store(array $data): void
+    public function store(array $data): array
     {
-        $name = $data['name'];
-        $query = $this->db->prepare('INSERT INTO authors (name) VALUES (:name)');
-        $query->bindParam(':name', $name);
-        $query->execute();
+        return $this->author->create($data);
     }
 
-    public function update(array $data): void
+    public function update(array $data): array
     {
-        $id = $data['id'];
-        $name = $data['name'];
-        $query = $this->db->prepare('UPDATE authors SET name = :name WHERE id = :id');
-        $query->bindParam(':name', $name);
-        $query->bindParam(':id', $id);
-        $query->execute();
+        return $this->author->update($data);
     }
 
     public function delete(array $data): array
@@ -49,12 +41,8 @@ class AuthorsController extends Controller
         return $this->author->deleteById($id);
     }
 
-    public function books(array $data): array
+    public function booksByAuthor(array $data): array
     {
-        $id = $data['id'];
-        $query = $this->db->prepare('SELECT * FROM books WHERE authors_id = :id');
-        $query->bindParam(':id', $id);
-        $query->execute();
-        return $query->fetchAll();
+        return (new Book())->findAllBy('authors_id', $data['id']);
     }
 }
