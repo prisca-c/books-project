@@ -3,42 +3,42 @@
 namespace App\Controllers;
 
 use App\Database\QueryMethods;
+use App\Models\Tag;
 
 class TagsController extends Controller
 {
+    private Tag $tag;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->tag = new Tag();
+    }
 
     public function index(): array
     {
-        return QueryMethods::findAll('tags');
+        return $this->tag->findAll();
     }
 
     public function show(array $data): array
     {
         $id = $data['id'];
-        return QueryMethods::findById('tags', $id);
+        return $this->tag->findById($id);
     }
 
-    public function store(array $data): void
+    public function store(array $data): array
     {
-        $name = $data['name'];
-        $query = $this->db->prepare('INSERT INTO tags (name) VALUES (:name)');
-        $query->bindParam(':name', $name);
-        $query->execute();
+        return $this->tag->create($data);
     }
 
-    public function update(array $data): void
+    public function update(array $data): array
     {
-        $id = $data['id'];
-        $name = $data['name'];
-        $query = $this->db->prepare('UPDATE tags SET name = :name WHERE id = :id');
-        $query->bindParam(':name', $name);
-        $query->bindParam(':id', $id);
-        $query->execute();
+        return $this->tag->update($data);
     }
 
-    public function delete(array $data): void
+    public function delete(array $data): array
     {
         $id = $data['id'];
-        QueryMethods::deleteById('tags', $id);
+        return $this->tag->deleteById($id);
     }
 }

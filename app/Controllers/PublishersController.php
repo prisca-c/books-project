@@ -3,19 +3,27 @@
 namespace App\Controllers;
 
 use App\Database\QueryMethods;
+use App\Models\Publisher;
 
 class PublishersController extends Controller
 {
+    private Publisher $publishers;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->publishers = new Publisher();
+    }
 
     public function index(): array
     {
-        return QueryMethods::findAll('publishers');
+        return $this->publishers->findAll();
     }
 
     public function show(array $data): array
     {
         $id = $data['id'];
-        return QueryMethods::findById('publishers', $id);
+        return $this->publishers->findById($id);
     }
 
     public function store(array $data): void
@@ -36,9 +44,9 @@ class PublishersController extends Controller
         $query->execute();
     }
 
-    public function delete(array $data): void
+    public function delete(array $data): array
     {
         $id = $data['id'];
-        QueryMethods::deleteById('publishers', $id);
+        return $this->publishers->deleteById($id);
     }
 }

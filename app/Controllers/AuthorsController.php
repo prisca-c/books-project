@@ -22,7 +22,7 @@ class AuthorsController extends Controller
     public function show(array $data): array
     {
         $id = $data['id'];
-        return QueryMethods::findById('authors', $id);
+        return $this->author->findById($id);
     }
 
     public function store(array $data): void
@@ -43,10 +43,10 @@ class AuthorsController extends Controller
         $query->execute();
     }
 
-    public function delete(array $data): void
+    public function delete(array $data): array
     {
         $id = $data['id'];
-        QueryMethods::deleteById('authors', $id);
+        return $this->author->deleteById($id);
     }
 
     public function books(array $data): array
