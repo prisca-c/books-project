@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Database\QueryMethods;
 use App\Helpers\ResponseCodeHandler;
+use App\Helpers\StringHandler;
 
 class Model
 {
@@ -14,7 +15,7 @@ class Model
 
     public function __construct()
     {
-        $this->table = strtolower((new \ReflectionClass($this))->getShortName()) . 's';
+        $this->table = StringHandler::toSnakeCase((new \ReflectionClass($this))->getShortName()) . 's';
         $this->response = new ResponseCodeHandler();
         $this->query = new QueryMethods();
     }
@@ -38,7 +39,7 @@ class Model
     public function create(array $data): array
     {
         $this->query->create($this->table, $data, $this->fillable);
-        return $this->response->ok('Created');
+        return $this->response->created();
     }
 
     public function update(array $data): array
@@ -49,7 +50,7 @@ class Model
 
     public function findAllBy(string $field, string $value): array
     {
-        return $this->query->findAllBy($this->table, $this->fillable, $field, $value);
+        return $this->query->findAllBy($this->table, $field, $value);
     }
 
     public function getFields(): array
