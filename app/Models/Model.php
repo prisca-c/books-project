@@ -32,19 +32,19 @@ class Model
     public function deleteById(int $id): array
     {
         $this->query->deleteById($this->table, $id);
-        return $this->response->ok('User deleted');
+        return $this->response->ok('Deleted');
     }
 
     public function create(array $data): array
     {
         $this->query->create($this->table, $data, $this->fillable);
-        return $this->response->ok('User created');
+        return $this->response->ok('Created');
     }
 
     public function update(array $data): array
     {
         $this->query->update($this->table, $data, $this->fillable, $data['id']);
-        return $this->response->ok('User updated');
+        return $this->response->ok('Updated');
     }
 
     public function findAllBy(string $field, string $value): array
