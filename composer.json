@@ -16,5 +16,8 @@
             "email": "prisca.castanier@gmail.com"
         }
     ],
+    "scripts": {
+        "db:seed": "Database\\Seeders\\Seeder::run"
+    },
     "require": {}
 }
