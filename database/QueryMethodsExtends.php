@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Database;
+namespace Database;
 
-use App\Helpers\ArrayHandler;
-
-class QueryMethodsExtends extends QueryMethods
+class QueryMethodsExtends
 {
     public static function findAllBy(
         string $table,

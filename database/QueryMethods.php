@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Database;
+namespace Database;
 
 use App\Helpers\ArrayHandler;
 
