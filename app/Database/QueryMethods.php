@@ -27,15 +27,6 @@ class QueryMethods extends QueryMethodsExtends
         return $query->fetch();
     }
 
-    public static function deleteById(string $table, int $id): void
-    {
-        $query = (new Database)->connect()->prepare(
-            "DELETE FROM $table WHERE id = :id"
-        );
-        $query->bindParam(':id', $id);
-        $query->execute();
-    }
-
     public static function create(string $table, array $data, array $fillable): void
     {
         $query = (new Database)->connect()->prepare(
@@ -58,6 +49,15 @@ class QueryMethods extends QueryMethodsExtends
         foreach ($fillable as $item) {
             $query->bindParam(":$item", $data[$item]);
         }
+        $query->bindParam(':id', $id);
+        $query->execute();
+    }
+
+    public static function deleteById(string $table, int $id): void
+    {
+        $query = (new Database)->connect()->prepare(
+            "DELETE FROM $table WHERE id = :id"
+        );
         $query->bindParam(':id', $id);
         $query->execute();
     }
