@@ -100,4 +100,16 @@ class BooksController extends Controller
         $values = ['tags'];
         return QueryHandler::queryValueToJSON($result, $values);
     }
+
+    public function addTag(array $data): void
+    {
+        $book_tag_relation_model = new BookTagRelation();
+        $book_tag_relation_model->create($data);
+    }
+
+    public function removeTag(array $data): array
+    {
+        $book_tag_relation_model = new BookTagRelation();
+        return $book_tag_relation_model->deleteBy($data);
+    }
 }
