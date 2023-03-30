@@ -20,4 +20,19 @@ class Database
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]);
     }
+
+    public static function drop(): void
+    {
+        $db = (new Database())->connect();
+        $tables = $db->query("SHOW TABLES")->fetchAll();
+        $db->query("SET FOREIGN_KEY_CHECKS = 0");
+        $database = database_config::$db_name;
+        foreach ($tables as $table) {
+            $table = $table['Tables_in_'.$database];
+            $db->query("DROP TABLE $table");
+        }
+        $db->query("SET FOREIGN_KEY_CHECKS = 1");
+    }
+
+
 }

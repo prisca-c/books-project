@@ -6,18 +6,24 @@
             "App\\Controllers\\": "app/Controllers/",
             "App\\Router\\": "app/Router/",
             "App\\Models\\": "app/Models/",
-            "App\\Database\\": "app/Database/",
-            "App\\Helpers\\": "app/Helpers/"
+            "Database\\": "database/",
+            "Database\\Seeders\\": "database/Seeders/",
+            "App\\Helpers\\": "app/Helpers/",
+            "Config\\": "config/"
         }
     },
     "authors": [
         {
-            "name": "Prisca C.",
-            "email": "prisca.castanier@gmail.com"
+            "name": "Prisca C."
         }
     ],
     "scripts": {
-        "db:seed": "Database\\Seeders\\Seeder::run"
+        "start": [
+            "Composer\\Config::disableProcessTimeout",
+            "php -S localhost:8000 server.php"
+        ],
+        "db:seed": "Database\\Seeders\\Seeder::run",
+        "db:drop": "Database\\Database::drop"
     },
     "require": {}
 }
