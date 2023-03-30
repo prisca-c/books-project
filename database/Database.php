@@ -1,16 +1,25 @@
 <?php
 
-namespace database;
+namespace Database;
 
+use Config\database_config;
 use PDO;
 
 class Database
 {
     /* define the database connection */
-    private string $servername = "localhost:3306";
-    private string $username = "root";
-    private string $password = "root";
-    private string $dbname = "database_course_creative";
+    private string $servername;
+    private string $username;
+    private string $password;
+    private string $dbname;
+
+    public function __construct()
+    {
+        $this->servername = database_config::$db_host;
+        $this->username = database_config::$db_user;
+        $this->password = database_config::$db_password;
+        $this->dbname = database_config::$db_name;
+    }
 
     /* connect to mysql database */
     public function connect(): PDO
