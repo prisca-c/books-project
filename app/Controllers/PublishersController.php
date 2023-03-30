@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Database\QueryMethods;
 use App\Models\Publisher;
 
 class PublishersController extends Controller

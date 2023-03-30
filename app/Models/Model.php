@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Database\QueryMethods;
 use App\Helpers\ResponseCodeHandler;
 use App\Helpers\StringHandler;
+use Database\QueryMethods;
 
 class Model
 {

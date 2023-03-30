@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Database\QueryMethods;
 use App\Models\Tag;
 
 class TagsController extends Controller
