@@ -8,5 +8,6 @@ class Book extends Model
         'title',
         'authors_id',
         'publishers_id',
+        'published_at',
     ];
 }

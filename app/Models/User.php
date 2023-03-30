@@ -5,6 +5,8 @@ namespace App\Models;
 class User extends Model
 {
     protected array $fillable = [
-        'username'
+        'username',
+        'password',
+        'email',
     ];
 }
