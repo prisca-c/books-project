@@ -2,7 +2,7 @@
 
 namespace Database;
 
-use App\Helpers\ArrayHandler;
+use Helpers\ArrayHandler;
 
 class QueryMethods extends QueryMethodsExtends
 {

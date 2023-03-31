@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Helpers\ResponseCodeHandler;
 use Database\Database;
+use Helpers\ResponseCodeHandler;
 use PDO;
 
 class Controller

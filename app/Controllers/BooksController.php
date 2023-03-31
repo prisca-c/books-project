@@ -2,10 +2,10 @@
 
 namespace App\Controllers;
 
-use App\Helpers\QueryHandler;
-use App\Models\BookTagRelation;
 use App\Models\Book;
+use App\Models\BookTagRelation;
 use App\Models\Tag;
+use Helpers\QueryHandler;
 
 class BooksController extends Controller
 {
