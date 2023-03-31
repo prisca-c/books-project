@@ -3,19 +3,22 @@
 namespace App\Models;
 
 use Database\QueryMethods;
+use Helpers\ModelHandler;
 use Helpers\ResponseCodeHandler;
 use Helpers\StringHandler;
 
 class Model
 {
     protected string $table;
+    protected string $model;
     protected array $fillable = [];
     protected ResponseCodeHandler $response;
     protected QueryMethods $query;
 
     public function __construct()
     {
-        $this->table = StringHandler::toSnakeCase((new \ReflectionClass($this))->getShortName()) . 's';
+        $this->model = (new \ReflectionClass($this))->getShortName();
+        $this->table = ModelHandler::tableName($this->model);
         $this->response = new ResponseCodeHandler();
         $this->query = new QueryMethods();
     }
