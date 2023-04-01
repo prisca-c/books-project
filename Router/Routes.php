@@ -21,8 +21,11 @@ class Routes
             $route->delete('/books/id/tags', 'BooksController', 'removeTag');
             $route->get('/books/authors/id', 'BooksController', 'booksByAuthor');
 
+            $route->resources('/libraries', 'LibrariesController');
+            $route->resources('/wishlists', 'WishlistsController');
             $route->resources('/publishers', 'PublishersController');
             $route->resources('/tags', 'TagsController');
+            $route->resources('/ratings', 'RatingsController');
         }
 //    catch (PDOException $e) {
 //        echo 'Something went wrong.';

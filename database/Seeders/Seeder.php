@@ -17,5 +17,9 @@ class Seeder
         UserSeeder::seed();
         BookSeeder::seed();
         BookTagRelationSeeder::seed();
+        EditionSeeder::seed();
+        LibrarySeeder::seed();
+        WishlistSeeder::seed();
+        RatingSeeder::seed();
     }
 }
