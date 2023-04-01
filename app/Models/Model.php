@@ -5,9 +5,8 @@ namespace App\Models;
 use Database\QueryMethods;
 use Helpers\ModelHandler;
 use Helpers\ResponseCodeHandler;
-use Helpers\StringHandler;
 
-class Model
+abstract class Model
 {
     protected string $table;
     protected string $model;

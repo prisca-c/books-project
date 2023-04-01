@@ -6,7 +6,7 @@ use Database\Database;
 use Helpers\ResponseCodeHandler;
 use PDO;
 
-class Controller
+abstract class Controller
 {
     protected PDO $db;
     protected ResponseCodeHandler $response;
