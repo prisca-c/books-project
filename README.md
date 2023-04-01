@@ -17,7 +17,7 @@ __Requirements:__
 - Composer
 - MySQL
 - A web server (Apache, Nginx, etc.)
-- **Optional** * : Docker (to create a container for the database, but you can use a database from any provider)
+- **Optional** * : Docker (to create a container for the database, but you can use any MYSQL Database)
 
 __Installation:__
 
@@ -39,6 +39,8 @@ __Usage:__
 Commands that can be used :
 
 ```composer start``` : This will start a PHP server on port 8000.
+
+```composer db:create``` : This will create the databse ( **don't forget to change script inside ```composer.json``` with your database's informations** )
 
 ```composer db:seed``` : This will insert fake data into the database ( **to start when database is fresh new** )
 
