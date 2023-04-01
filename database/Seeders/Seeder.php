@@ -13,6 +13,7 @@ class Seeder
     {
         AuthorSeeder::seed();
         PublisherSeeder::seed();
+        StatusSeeder::seed();
         TagSeeder::seed();
         UserSeeder::seed();
         BookSeeder::seed();
