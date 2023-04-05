@@ -1,7 +1,8 @@
 <?php
 
-namespace Router;
+namespace Routes;
 
+use Core\Router;
 use Exception;
 
 class Routes
@@ -20,6 +21,8 @@ class Routes
             $route->post('/books/id/tags', 'BooksController', 'addTag');
             $route->delete('/books/id/tags', 'BooksController', 'removeTag');
             $route->get('/books/authors/id', 'BooksController', 'booksByAuthor');
+            $route->get('/books/id/ratings', 'BooksController', 'getBookRating');
+            $route->get('/books/search', 'BooksController', 'searchBooks');
 
             $route->resources('/libraries', 'LibrariesController');
             $route->resources('/wishlists', 'WishlistsController');

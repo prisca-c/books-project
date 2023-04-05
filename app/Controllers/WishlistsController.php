@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\Models\Wishlist;
+use Core\Controller;
+
 class WishlistsController extends Controller
 {
     private Wishlist $wishlists;

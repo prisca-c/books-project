@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Rating;
+use Core\Controller;
 
 class RatingsController extends Controller
 {

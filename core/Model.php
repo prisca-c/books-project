@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace Core;
 
-use Database\QueryMethods;
+use Core\Database\QueryMethods;
 use Helpers\ModelHandler;
-use Helpers\ResponseCodeHandler;
 
 abstract class Model
 {

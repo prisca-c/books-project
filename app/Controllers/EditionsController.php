@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Edition;
+use Core\Controller;
 
 class EditionsController extends Controller
 {

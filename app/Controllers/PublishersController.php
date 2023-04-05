@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Publisher;
+use Core\Controller;
 
 class PublishersController extends Controller
 {

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Core\Model;
+
 class Library extends Model
 {
     protected array $fillable = [

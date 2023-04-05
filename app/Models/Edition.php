@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Core\Model;
+
 class Edition extends Model
 {
     protected array $fillable = [

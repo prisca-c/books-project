@@ -2,8 +2,9 @@
 
 namespace App\Controllers;
 
-use Exception;
 use App\Models\User;
+use Core\Controller;
+use Exception;
 
 class UsersController extends Controller
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database;
+namespace Core\Database;
 
 use Config\database_config;
 use PDO;

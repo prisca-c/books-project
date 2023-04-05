@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Author;
 use App\Models\Book;
+use Core\Controller;
 
 class AuthorsController extends Controller
 {

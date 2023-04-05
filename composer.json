@@ -7,9 +7,11 @@
             "App\\Models\\": "app/Models/",
             "Database\\": "database/",
             "Database\\Seeders\\": "database/Seeders/",
-            "Router\\": "Router/",
+            "Routes\\": "Routes/",
             "Helpers\\": "Helpers/",
-            "Config\\": "config/"
+            "Config\\": "config/",
+            "Core\\": "core/",
+            "Core\\Database\\": "core/database/"
         }
     },
     "authors": [
@@ -24,7 +26,7 @@
         ],
         "db:create": "mysql -u root -proot -h 127.0.0.1 database_course_creative < ./database/database_create.sql",
         "db:seed": "Database\\Seeders\\Seeder::run",
-        "db:drop": "Database\\Database::drop"
+        "db:drop": "Core\\Database\\Database::drop"
     },
     "require": {}
 }

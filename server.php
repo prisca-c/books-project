@@ -2,7 +2,7 @@
 
 require 'vendor/autoload.php';
 
-use Router\Routes;
+use Routes\Routes;
 
 Routes::routes();
 

@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Controllers;
+namespace Core;
 
-use Database\Database;
-use Helpers\ResponseCodeHandler;
+use Core\Database\Database;
 use PDO;
 
 abstract class Controller

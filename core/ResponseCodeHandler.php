@@ -1,6 +1,6 @@
 <?php
 
-namespace Helpers;
+namespace Core;
 
 class ResponseCodeHandler
 {
@@ -20,16 +20,25 @@ class ResponseCodeHandler
         ];
     }
 
+    /**
+     * @throws \Exception
+     */
     public static function badRequest($message = 'Bad Request'): array
     {
         throw new \Exception($message, 400);
     }
 
+    /**
+     * @throws \Exception
+     */
     public static function unauthorized($message = 'Unauthorized'): array
     {
         throw new \Exception($message, 401);
     }
 
+    /**
+     * @throws \Exception
+     */
     public static function forbidden($message = 'Forbidden'): array
     {
         throw new \Exception($message, 403);

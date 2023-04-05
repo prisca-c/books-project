@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Library;
+use Core\Controller;
 
 class LibrariesController extends Controller
 {

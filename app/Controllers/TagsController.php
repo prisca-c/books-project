@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Tag;
+use Core\Controller;
 
 class TagsController extends Controller
 {
