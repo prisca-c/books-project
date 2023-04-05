@@ -17,6 +17,30 @@ class RatingSeeder
             ],
             [
                 'users_id' => 2,
+                'books_id' => 1,
+                'rating' => 2,
+                'review' => 'This is a review'
+            ],
+            [
+                'users_id' => 3,
+                'books_id' => 1,
+                'rating' => 4,
+                'review' => 'This is a review'
+            ],
+            [
+                'users_id' => 5,
+                'books_id' => 1,
+                'rating' => 4,
+                'review' => 'This is a review'
+            ],
+            [
+                'users_id' => 4,
+                'books_id' => 1,
+                'rating' => 1,
+                'review' => 'This is a review'
+            ],
+            [
+                'users_id' => 2,
                 'books_id' => 2,
                 'rating' => 4,
                 'review' => 'This is a review'
