@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\Book;
 use App\Models\BookTagRelation;
 use App\Models\Tag;
+use Core\Controller;
 use Helpers\QueryHandler;
 
 class BooksController extends Controller
@@ -100,5 +101,56 @@ class BooksController extends Controller
     {
         $book_tag_relation_model = new BookTagRelation();
         return $book_tag_relation_model->deleteBy($data);
+    }
+
+    public function getBookRating(array $data): array
+    {
+        $id = $data['id'];
+        $query = $this->db->prepare(
+            'SELECT books_id, ROUND(AVG(rating),2) AS rating
+            FROM ratings 
+            WHERE books_id = :id
+            GROUP BY books_id'
+        );
+        $query->bindParam(':id', $id);
+        $query->execute();
+        return $query->fetchAll();
+    }
+
+    public function searchBooks(array $data): array
+    {
+        $search = $data['search'];
+        $page = $data['page'];
+        $limit = ($page - 1) * 10;
+        $query = $this->db->prepare(
+            'SELECT books.id, books.title, books.published_at, authors.name AS author_name, publishers.name AS publisher_name, ROUND(AVG(ratings.rating),2) AS rating, 
+                (
+                    SELECT JSON_ARRAYAGG(JSON_OBJECT("id", tags.id, "name", tags.name))
+                    FROM book_tag_relations
+                    LEFT JOIN tags ON tags.id = book_tag_relations.tags_id
+                    WHERE book_tag_relations.books_id = books.id
+                ) AS tags
+                FROM books
+                LEFT JOIN authors ON authors.id = books.authors_id
+                LEFT JOIN book_tag_relations ON book_tag_relations.books_id = books.id
+                LEFT JOIN publishers ON publishers.id = books.publishers_id
+                LEFT JOIN tags ON tags.id = book_tag_relations.tags_id
+                LEFT JOIN ratings ON books.id = ratings.books_id
+                WHERE 
+                    books.title LIKE CONCAT(\'%\', :search, \'%\')
+                    OR authors.name LIKE CONCAT(\'%\', :search, \'%\') 
+                    OR publishers.name LIKE CONCAT(\'%\', :search, \'%\')
+                    OR tags.name LIKE CONCAT(\'%\', :search, \'%\')
+                GROUP BY books.id, books.published_at
+                ORDER BY books.published_at DESC
+                LIMIT :limit, 10;
+            '
+        );
+        $query->bindParam(':search', $search);
+        $query->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $query->execute();
+        $results = $query->fetchAll();
+        $values = ['tags'];
+        return QueryHandler::queryValueToJSON($results, $values);
     }
 }
