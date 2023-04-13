@@ -6,76 +6,74 @@ use Exception;
 
 class Router
 {
-    private string $method;
-    private string $request;
+    private string $url;
+    private array $routes = [];
+    private array $namedRoutes = [];
 
-    public function __construct()
-    {
-        $this->method = $_SERVER['REQUEST_METHOD'];
-        $this->request = $_SERVER['REQUEST_URI'];
+    public function __construct($url){
+        $this->url = $url;
     }
 
-    public function get($path, $controller, $method): void
+    public function get($path, $callable, $name = null): Route
     {
-        if ($this->request == $path && $this->method == 'GET') {
-            $controllerNs = "App\Controllers\\" . $controller;
-            $controller = new $controllerNs();
-            $data = file_get_contents("php://input");
-            $data = json_decode($data, true);
-            $stmt = $controller->$method($data);
-            $this->toJSON($stmt);
-        }
+        return $this->add($path, $callable, $name, "GET");
     }
 
-    public function post($path, $controller, $method): void
+    public function post($path, $callable, $name = null): Route
     {
-        if ($this->request == $path && $this->method == 'POST') {
-            $controllerNs = "App\Controllers\\" . $controller;
-            $controller = new $controllerNs();
-            $stmt = $controller->$method($_POST);
-            $this->toJSON($stmt);
-        }
+        return $this->add($path, $callable, $name, "POST");
     }
 
-    public function put($path, $controller, $method): void
+    public function put($path, $callable, $name = null): Route
     {
-        if ($this->request == $path && $this->method == 'PUT') {
-            $controllerNs = "App\Controllers\\" . $controller;
-            $controller = new $controllerNs();
-            $data = file_get_contents("php://input");
-            $data = json_decode($data, true);
-            $stmt = $controller->$method($data);
-            $this->toJSON($stmt);
-        }
+        return $this->add($path, $callable, $name, "PUT");
     }
 
-    public function delete($path, $controller, $method): void
+    public function delete($path, $callable, $name = null): Route
     {
-        if ($this->request == $path && $this->method == 'DELETE') {
-            $controllerNs = "App\Controllers\\" . $controller;
-            $controller = new $controllerNs();
-            $data = file_get_contents("php://input");
-            $data = json_decode($data, true);
-            $stmt = $controller->$method($data);
-            $this->toJSON($stmt);
-        }
+        return $this->add($path, $callable, $name, "DELETE");
     }
 
-    /**
-     * @throws Exception
-     */
     public function resources($path, $controller): void
     {
-        $this->get($path, $controller, 'index');
-        $this->get($path . '/id', $controller, 'show');
-        $this->post($path, $controller, 'store');
-        $this->put($path, $controller, 'update');
-        $this->delete($path, $controller, 'delete');
+        $this->get("$path", "$controller#index");
+        $this->post("$path", "$controller#store");
+        $this->get("$path/id/:id", "$controller#show");
+        $this->put("$path/id/:id", "$controller#update");
+        $this->delete("$path/id/:id", "$controller#delete");
     }
 
-    public function toJSON($data): void
+    private function add($path, $callable, $name, $method): Route
     {
-        header('Content-Type: application/json');
-        echo json_encode($data);
+        $route = new Route($path, $callable);
+        $this->routes[$method][] = $route;
+        if(is_string($callable) && $name === null){
+            $name = $callable;
+        }
+        if($name){
+            $this->namedRoutes[$name] = $route;
+        }
+        return $route;
+    }
+
+    public function run()
+    {
+        if(!isset($this->routes[$_SERVER['REQUEST_METHOD']])){
+            throw new Exception("REQUEST_METHOD does not exist");
+        }
+        foreach($this->routes[$_SERVER['REQUEST_METHOD']] as $route){
+            if($route->match($this->url)){
+                return $route->call();
+            }
+        }
+        throw new Exception("No matching routes");
+    }
+
+    public function url($name, $params = []): string
+    {
+        if(!isset($this->namedRoutes[$name])){
+            throw new Exception("No route matches this name");
+        }
+        return $this->namedRoutes[$name]->getUrl($params);
     }
 }

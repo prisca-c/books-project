@@ -9,30 +9,15 @@ class Routes
 {
     public static function routes(): void
     {
-        $route = new Router();
+        $router = new Router($_SERVER['REQUEST_URI']);
+        $router->resources('/books', 'Books');
 
         try {
-            $route->resources('/users', 'UsersController');
-            $route->resources('/authors', 'AuthorsController');
-
-            $route->resources('/books', 'BooksController');
-            $route->get('/books/tags/id', 'BooksController', 'booksByTagId');
-            $route->get('/books/id/tags', 'BooksController', 'getTags');
-            $route->post('/books/id/tags', 'BooksController', 'addTag');
-            $route->delete('/books/id/tags', 'BooksController', 'removeTag');
-            $route->get('/books/authors/id', 'BooksController', 'booksByAuthor');
-            $route->get('/books/id/ratings', 'BooksController', 'getBookRating');
-            $route->get('/books/search', 'BooksController', 'searchBooks');
-
-            $route->resources('/libraries', 'LibrariesController');
-            $route->resources('/wishlists', 'WishlistsController');
-            $route->resources('/publishers', 'PublishersController');
-            $route->resources('/tags', 'TagsController');
-            $route->resources('/ratings', 'RatingsController');
+            $router->run();
         }
-//    catch (PDOException $e) {
-//        echo 'Something went wrong.';
-//    }
+        catch (PDOException $e) {
+            echo 'Something went wrong.';
+        }
         catch (Exception $e) {
             echo 'Error ' . $e->getCode() . ': ' . $e->getMessage();
         }
