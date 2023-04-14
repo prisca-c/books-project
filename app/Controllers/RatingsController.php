@@ -20,9 +20,9 @@ class RatingsController extends Controller
         return $this->ratings->findAll();
     }
 
-    public function show(array $data): array
+    public function show(string $id): array
     {
-        return $this->ratings->findById($data['id']);
+        return $this->ratings->findById($id);
     }
 
     public function store(array $data): void
@@ -35,8 +35,8 @@ class RatingsController extends Controller
         $this->ratings->update($data);
     }
 
-    public function delete(array $data): void
+    public function delete(string $id): void
     {
-        $this->ratings->deleteById($data['id']);
+        $this->ratings->deleteById($id);
     }
 }

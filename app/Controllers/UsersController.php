@@ -33,9 +33,8 @@ class UsersController extends Controller
         return $this->users->create($data);
     }
 
-    public function show($data): false|array
+    public function show(string $id): false|array
     {
-        $id = $data['id'];
         return $this->users->findById($id);
     }
 
@@ -44,9 +43,8 @@ class UsersController extends Controller
         return $this->users->update($data);
     }
 
-    public function delete($data): array
+    public function delete(string $id): array
     {
-        $id = $data['id'];
         return $this->users->deleteById($id);
     }
 }

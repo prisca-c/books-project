@@ -20,9 +20,9 @@ class WishlistsController extends Controller
         return $this->wishlists->findAll();
     }
 
-    public function show(array $data): array
+    public function show(string|int $id): array
     {
-        return $this->wishlists->findById($data['id']);
+        return $this->wishlists->findById($id);
     }
 
     public function store(array $data): void
@@ -35,8 +35,8 @@ class WishlistsController extends Controller
         $this->wishlists->update($data);
     }
 
-    public function delete(array $data): void
+    public function delete(string $id): void
     {
-        $this->wishlists->deleteById($data['id']);
+        $this->wishlists->deleteById($id);
     }
 }

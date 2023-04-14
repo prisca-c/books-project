@@ -20,9 +20,8 @@ class TagsController extends Controller
         return $this->tag->findAll();
     }
 
-    public function show(array $data): array
+    public function show(string $id): array
     {
-        $id = $data['id'];
         return $this->tag->findById($id);
     }
 
@@ -36,9 +35,8 @@ class TagsController extends Controller
         return $this->tag->update($data);
     }
 
-    public function delete(array $data): array
+    public function delete(string $id): array
     {
-        $id = $data['id'];
         return $this->tag->deleteById($id);
     }
 }

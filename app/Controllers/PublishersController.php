@@ -20,9 +20,8 @@ class PublishersController extends Controller
         return $this->publishers->findAll();
     }
 
-    public function show(array $data): array
+    public function show(string|int $id): array
     {
-        $id = $data['id'];
         return $this->publishers->findById($id);
     }
 
@@ -44,9 +43,8 @@ class PublishersController extends Controller
         $query->execute();
     }
 
-    public function delete(array $data): array
+    public function delete(string $id): array
     {
-        $id = $data['id'];
         return $this->publishers->deleteById($id);
     }
 }

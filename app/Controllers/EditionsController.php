@@ -20,9 +20,9 @@ class EditionsController extends Controller
         return $this->editions->findAll();
     }
 
-    public function show(array $data): array
+    public function show(string $id): array
     {
-        return $this->editions->findById($data['id']);
+        return $this->editions->findById($id);
     }
 
     public function store(array $data): void
@@ -35,8 +35,8 @@ class EditionsController extends Controller
         $this->editions->update($data);
     }
 
-    public function delete(array $data): void
+    public function delete(string $id): void
     {
-        $this->editions->deleteById($data['id']);
+        $this->editions->deleteById($id);
     }
 }

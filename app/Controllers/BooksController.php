@@ -23,9 +23,9 @@ class BooksController extends Controller
         return $this->books->findAll();
     }
 
-    public function show(array $data): array
+    public function show(string|int $id): array
     {
-        return $this->books->findById($data['id']);
+        return $this->books->findById($id);
     }
 
     public function store(array $data): void
@@ -38,9 +38,8 @@ class BooksController extends Controller
         $this->books->update($data);
     }
 
-    public function delete(array $data): void
+    public function delete(string $id): void
     {
-        $id = $data['id'];
         $this->books->deleteById($id);
     }
 

@@ -20,9 +20,9 @@ class LibrariesController extends Controller
         return $this->libraries->findAll();
     }
 
-    public function show(array $data): array
+    public function show(string $id): array
     {
-        return $this->libraries->findById($data['id']);
+        return $this->libraries->findById($id);
     }
 
     public function store(array $data): void
@@ -35,8 +35,8 @@ class LibrariesController extends Controller
         $this->libraries->update($data);
     }
 
-    public function delete(array $data): void
+    public function delete(string $id): void
     {
-        $this->libraries->deleteById($data['id']);
+        $this->libraries->deleteById($id);
     }
 }

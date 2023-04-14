@@ -20,9 +20,8 @@ class AuthorsController extends Controller
         return $this->author->findAll();
     }
 
-    public function show(array $data): array
+    public function show(string|int $id): array
     {
-        $id = $data['id'];
         return $this->author->findById($id);
     }
 
@@ -36,9 +35,8 @@ class AuthorsController extends Controller
         return $this->author->update($data);
     }
 
-    public function delete(array $data): array
+    public function delete(string $id): array
     {
-        $id = $data['id'];
         return $this->author->deleteById($id);
     }
 
