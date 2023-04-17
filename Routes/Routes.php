@@ -4,16 +4,27 @@ namespace Routes;
 
 use Core\Router;
 use Exception;
+use PDOException;
 
 class Routes
 {
     public static function routes(): void
     {
-        $router = new Router($_SERVER['REQUEST_URI']);
-        $router->resources('/books', 'Books');
+        $routes = new Router($_SERVER['REQUEST_URI']);
+        $routes->resources('/books', 'Books');
+        $routes->resources('/authors', 'Authors');
+        $routes->resources('/publishers', 'Publishers');
+        $routes->resources('/tags', 'Tags');
+        $routes->resources('/ratings', 'Ratings');
+        $routes->resources('/libraries', 'Libraries');
+        $routes->resources('/wishlists', 'Wishlists');
+        $routes->resources('/users', 'Users');
+        $routes->resources('/editions', 'Editions');
+
+        $routes->post('/login', 'Users#login');
 
         try {
-            $router->run();
+            $routes->run();
         }
         catch (PDOException $e) {
             echo 'Something went wrong.';
