@@ -39,7 +39,14 @@ class Route
             $params = explode("#", $this->callable);
             $controller = "App\\Controllers\\" . $params[0] . "Controller";
             $controller = new $controller();
-            echo json_encode(call_user_func_array([$controller, $params[1]], $this->matches), JSON_PRETTY_PRINT);
+            if ($_SERVER['REQUEST_METHOD'] === 'POST' or $_SERVER['REQUEST_METHOD'] === 'PUT') {
+                $data = json_decode(file_get_contents('php://input'), true);
+                $controller->{$params[1]}($data);
+            } elseif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+                return;
+            } else {
+                echo json_encode(call_user_func_array([$controller, $params[1]], $this->matches), JSON_PRETTY_PRINT);
+            }
         } else {
             echo json_encode(call_user_func_array($this->callable, $this->matches), JSON_PRETTY_PRINT);
         }
