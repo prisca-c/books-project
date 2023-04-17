@@ -19,7 +19,9 @@ class Routes
             echo 'Something went wrong.';
         }
         catch (Exception $e) {
-            echo 'Error ' . $e->getCode() . ': ' . $e->getMessage();
+            var_dump([
+                'code' => $e->getCode(),
+                'message' => $e->getMessage()]);
         }
     }
 }
