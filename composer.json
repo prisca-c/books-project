@@ -28,5 +28,7 @@
         "db:seed": "Database\\Seeders\\Seeder::run",
         "db:drop": "Core\\Database\\Database::drop"
     },
-    "require": {}
+    "require": {
+        "ext-pdo": "*"
+    }
 }
