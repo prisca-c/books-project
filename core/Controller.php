@@ -13,5 +13,6 @@ abstract class Controller
     public function __construct()
     {
         $this->db = (new Database())->connect();
+        $this->response = new ResponseCodeHandler();
     }
 }
