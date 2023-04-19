@@ -22,17 +22,20 @@ class Routes
         $routes->resources('/editions', 'Editions');
 
         $routes->post('/login', 'Users#login');
+        $routes->post('/register', 'Users#register');
 
         try {
             $routes->run();
         }
-        catch (PDOException $e) {
-            echo 'Something went wrong.';
-        }
+//        catch (PDOException $e) {
+//            echo 'Something went wrong.';
+//        }
         catch (Exception $e) {
-            var_dump([
+            $json = json_encode([
                 'code' => $e->getCode(),
-                'message' => $e->getMessage()]);
+                'message' => $e->getMessage()
+            ], JSON_PRETTY_PRINT);
+            echo $json;
         }
     }
 }
