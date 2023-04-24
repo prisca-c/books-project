@@ -4,18 +4,26 @@ namespace Core;
 
 class ResponseCodeHandler
 {
-    public static function created($message = 'Created'): array
+    public static function created($message = 'Created', $cookie=null): array
     {
         http_response_code(201);
+        if($cookie){
+            header('Set-Cookie: cookie-session='. $cookie . '; HttpOnly; Secure; SameSite=strict; Path="./"');
+        }
         return [
             'code' => 201,
             'message' => $message,
         ];
     }
 
-    public static function ok($message = 'OK'): array
+    public static function ok($message = 'OK', $cookie=null): array
     {
         http_response_code(200);
+
+        if($cookie){
+            header('Set-Cookie: cookie-session='. $cookie . '; domain=localhost; HttpOnly; Secure; SameSite=strict; Path="./"');
+        }
+
         return [
             'code' => 200,
             'message' => $message,
