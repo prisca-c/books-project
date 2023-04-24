@@ -41,7 +41,8 @@ class Route
             $controller = new $controller();
             if ($_SERVER['REQUEST_METHOD'] === 'POST' or $_SERVER['REQUEST_METHOD'] === 'PUT') {
                 $data = json_decode(file_get_contents('php://input'), true);
-                $controller->{$params[1]}($data);
+                $result = $controller->{$params[1]}($data);
+                echo json_encode(($result), JSON_PRETTY_PRINT);
             } elseif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
                 return;
             } else {
