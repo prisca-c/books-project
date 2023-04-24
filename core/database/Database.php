@@ -3,6 +3,7 @@
 namespace Core\Database;
 
 use Config\database_config;
+use Dotenv\Dotenv;
 use PDO;
 
 class Database
@@ -32,10 +33,13 @@ class Database
 
     public static function drop(): void
     {
+        $dotenv = Dotenv::createImmutable(dirname(__DIR__, 2));
+        $dotenv->load();
+
         $db = (new Database())->connect();
         $tables = $db->query("SHOW TABLES")->fetchAll();
         $db->query("SET FOREIGN_KEY_CHECKS = 0");
-        $database = database_config::$db_name;
+        $database = database_config::getDbName();
         foreach ($tables as $table) {
             $table = $table['Tables_in_'.$database];
             $db->query("DROP TABLE $table");
