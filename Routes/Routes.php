@@ -12,6 +12,7 @@ class Routes
     {
         $routes = new Router($_SERVER['REQUEST_URI']);
         $routes->resources('/books', 'Books');
+        $routes->post('/search', 'Books#searchBooks');
         $routes->resources('/authors', 'Authors');
         $routes->resources('/publishers', 'Publishers');
         $routes->resources('/tags', 'Tags');
