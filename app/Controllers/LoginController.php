@@ -33,7 +33,9 @@ class LoginController extends \Core\Controller
             return $this->response->internalServerError('Username or password is incorrect');
         }
 
-        return $this->response->ok('Login successful');
+        $token = Auth::generateToken($user['id']);
+
+        return array_merge($this->response->ok('Login Successful'), ['token' => $token]);
     }
 
     /**
@@ -76,6 +78,6 @@ class LoginController extends \Core\Controller
 
         $JWT = Auth::generateToken($user['id']);
 
-        return array_merge($result, ['token' => $JWT]);
+        return $this->response->created('Created', $JWT);
     }
 }
