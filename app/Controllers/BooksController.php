@@ -128,12 +128,18 @@ class BooksController extends Controller
                     FROM book_tag_relations
                     LEFT JOIN tags ON tags.id = book_tag_relations.tags_id
                     WHERE book_tag_relations.books_id = books.id
-                ) AS tags
+                ) AS tags,
+                (
+                    SELECT JSON_ARRAYAGG(JSON_OBJECT("id", editions.id, "format", editions.format))
+                    FROM editions
+                    WHERE editions.books_id = books.id
+                ) AS editions
                 FROM books
                 LEFT JOIN authors ON authors.id = books.authors_id
                 LEFT JOIN book_tag_relations ON book_tag_relations.books_id = books.id
                 LEFT JOIN publishers ON publishers.id = books.publishers_id
                 LEFT JOIN tags ON tags.id = book_tag_relations.tags_id
+                LEFT JOIN editions ON books.id = editions.books_id
                 LEFT JOIN ratings ON books.id = ratings.books_id
                 WHERE 
                     books.title LIKE CONCAT(\'%\', :search, \'%\')
@@ -149,7 +155,7 @@ class BooksController extends Controller
         $query->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $query->execute();
         $results = $query->fetchAll();
-        $values = ['tags'];
+        $values = ['tags', 'editions'];
         return QueryHandler::queryValueToJSON($results, $values);
     }
 }
