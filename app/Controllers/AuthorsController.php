@@ -22,7 +22,19 @@ class AuthorsController extends Controller
 
     public function show(string|int $id): array
     {
-        return $this->author->findById($id);
+        $query = $this->db->prepare("
+            SELECT authors.id, authors.name, ROUND(AVG(ratings.rating), 2) AS rating, COUNT(DISTINCT books.id) AS books_count, COUNT(DISTINCT libraries.id) AS libraries_count, COUNT(DISTINCT wishlists.id) AS wishlists_count
+            FROM authors 
+            LEFT JOIN books ON authors.id = books.authors_id
+            LEFT JOIN editions ON books.id = editions.books_id 
+            LEFT JOIN libraries ON editions.id = libraries.editions_id
+            LEFT JOIN wishlists ON editions.id = wishlists.editions_id
+            LEFT JOIN ratings ON books.id = ratings.books_id
+            WHERE authors.id = :id");
+        $query->bindParam(':id', $id);
+        $query->execute();
+
+        return $query->fetch();
     }
 
     public function store(array $data): array
