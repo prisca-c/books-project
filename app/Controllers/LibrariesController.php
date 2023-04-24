@@ -39,4 +39,16 @@ class LibrariesController extends Controller
     {
         $this->libraries->deleteById($id);
     }
+
+    public function getLibraryCurrentReadingCount(int|string $id): array
+    {
+        $query = $this->db->prepare("
+            SELECT COUNT(DISTINCT libraries.id) AS libraries_count
+            FROM libraries
+            WHERE libraries.status_id = 2 AND libraries.users_id = :id");
+        $query->bindParam(':id', $id);
+        $query->execute();
+
+        return $query->fetch();
+    }
 }

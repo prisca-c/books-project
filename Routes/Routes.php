@@ -25,6 +25,8 @@ class Routes
         $routes->post('/login', 'Users#login');
         $routes->post('/register', 'Users#register');
 
+        $routes->get('/users/id/:id/libraries/current/count', 'Libraries#getLibraryCurrentReadingCount');
+
         try {
             $routes->run();
         }
