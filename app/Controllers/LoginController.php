@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\User;
+use Core\Auth;
 use Exception;
 
 class LoginController extends \Core\Controller
@@ -70,6 +71,11 @@ class LoginController extends \Core\Controller
 
         $data['password'] = $password;
 
-        return $this->users->create($data);
+        $result = $this->users->create($data);
+        $user = $this->users->findAllBy('username', $username)[0];
+
+        $JWT = Auth::generateToken($user['id']);
+
+        return array_merge($result, ['token' => $JWT]);
     }
 }
