@@ -2,6 +2,11 @@
 
 namespace Database\Seeders;
 
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(dirname(__DIR__, 2));
+$dotenv->load();
+
 class Seeder
 {
 
