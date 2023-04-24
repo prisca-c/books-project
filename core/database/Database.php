@@ -15,10 +15,10 @@ class Database
 
     public function __construct()
     {
-        $this->servername = database_config::$db_host;
-        $this->username = database_config::$db_user;
-        $this->password = database_config::$db_password;
-        $this->dbname = database_config::$db_name;
+        $this->servername = database_config::getDbHost();
+        $this->username = database_config::getDbUser();
+        $this->password = database_config::getDbPassword();
+        $this->dbname = database_config::getDbName();
     }
 
     /* connect to mysql database */
