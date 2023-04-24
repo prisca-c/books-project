@@ -39,4 +39,16 @@ class WishlistsController extends Controller
     {
         $this->wishlists->deleteById($id);
     }
+
+    public function getCount(int|string $id): array
+    {
+        $query = $this->db->prepare("
+            SELECT COUNT(DISTINCT wishlists.id) AS wishlists_count
+            FROM wishlists
+            WHERE wishlists.users_id = :id");
+        $query->bindParam(':id', $id);
+        $query->execute();
+
+        return $query->fetch();
+    }
 }
