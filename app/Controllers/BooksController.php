@@ -120,7 +120,7 @@ class BooksController extends Controller
     {
         $search = $data['search'];
         $page = $data['page'];
-        $limit = ($page - 1) * 10;
+        $skip = ($page - 1) * 10;
         $query = $this->db->prepare(
             'SELECT books.id, books.title, books.published_at, authors.name AS author_name, publishers.name AS publisher_name, ROUND(AVG(ratings.rating),2) AS rating, 
                 (
@@ -148,11 +148,11 @@ class BooksController extends Controller
                     OR tags.name LIKE CONCAT(\'%\', :search, \'%\')
                 GROUP BY books.id, books.published_at
                 ORDER BY books.published_at DESC
-                LIMIT :limit, 10;
+                LIMIT :skip, 10;
             '
         );
         $query->bindParam(':search', $search);
-        $query->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $query->bindParam(':skip', $skip, \PDO::PARAM_INT);
         $query->execute();
         $results = $query->fetchAll();
         $values = ['tags', 'editions'];
