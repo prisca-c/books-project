@@ -56,6 +56,9 @@ class Router
         return $route;
     }
 
+    /**
+     * @throws Exception
+     */
     public function run()
     {
         if(!isset($this->routes[$_SERVER['REQUEST_METHOD']])){
@@ -69,6 +72,9 @@ class Router
         throw new Exception("No matching routes");
     }
 
+    /**
+     * @throws Exception
+     */
     public function url($name, $params = []): string
     {
         if(!isset($this->namedRoutes[$name])){
