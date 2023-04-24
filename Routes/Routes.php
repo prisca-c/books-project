@@ -22,8 +22,8 @@ class Routes
         $routes->resources('/users', 'Users');
         $routes->resources('/editions', 'Editions');
 
-        $routes->post('/login', 'Users#login');
-        $routes->post('/register', 'Users#register');
+        $routes->post('/login', 'Login#login');
+        $routes->post('/register', 'Login#register');
 
         $routes->get('/users/id/:id/wishlist/count', 'Wishlists#getCount');
         $routes->get('/users/id/:id/libraries/current/count', 'Libraries#getLibraryCurrentReadingCount');
