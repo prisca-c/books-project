@@ -11,5 +11,6 @@ class Book extends Model
         'authors_id',
         'publishers_id',
         'published_at',
+        'synopsis'
     ];
 }
