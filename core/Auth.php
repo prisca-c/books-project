@@ -15,7 +15,7 @@ class Auth
     {
         $secret = $_ENV['SECRET_KEY'];
         $issuedAt   = new DateTimeImmutable();
-        $expire     = $issuedAt->modify('+6 minutes')->getTimestamp();
+        $expire     = $issuedAt->modify('+1 day')->getTimestamp();
         $serverName = $_ENV['DOMAIN'];
 
         $payload = [
@@ -33,7 +33,7 @@ class Auth
             Cache::del('auth:users:'.$id);
         }
 
-        Cache::set('auth:users:'.$id, $JWT, 7200); // 2 hours
+        Cache::set('auth:users:'.$id, $JWT, 86400);
 
         return $JWT;
     }
