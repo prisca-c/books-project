@@ -3,6 +3,7 @@
 namespace Core\Database;
 
 use Config\database_config;
+use Core\EnvLoader;
 use Dotenv\Dotenv;
 use PDO;
 
@@ -33,8 +34,8 @@ class Database
 
     public static function drop(): void
     {
-        $dotenv = Dotenv::createImmutable(dirname(__DIR__, 2));
-        $dotenv->load();
+
+        EnvLoader::envLoader();
 
         $db = (new Database())->connect();
         $tables = $db->query("SHOW TABLES")->fetchAll();
