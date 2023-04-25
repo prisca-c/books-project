@@ -51,12 +51,7 @@ class Auth
 
     public static function decodeToken(string $token): array
     {
-        $secret = $_ENV['SECRET_KEY'];
-        try {
-            $decoded = JWT::decode($token, new Key($secret,'HS256'), ['HS256']);
-            return (array) $decoded;
-        } catch (\Exception $e) {
-            return [];
-        }
+        $decoded = JWT::decode($token, new Key($_ENV['SECRET_KEY'],'HS256'), ['HS256']);
+        return (array) $decoded;
     }
 }
