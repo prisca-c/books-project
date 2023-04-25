@@ -4,11 +4,11 @@ namespace Core;
 
 class ResponseCodeHandler
 {
-    public static function created($message = 'Created', $cookie=null): array
+    public static function created($message = 'Created', $cookie=['value'=>'', 'name'=>'', 'expires'=>'', 'max-age'=>'']): array
     {
         http_response_code(201);
-        if($cookie){
-            header('Set-Cookie: cookie-session='. $cookie . '; HttpOnly; Secure; SameSite=strict; Path="./"');
+        if($cookie['value'] !== ''){
+            header('Set-Cookie: ' . $cookie['name'] . '='. $cookie['value'] . '; Max-Age='. $cookie['max-age'] . '; HttpOnly; Secure; SameSite=strict; Path="./"');
         }
         return [
             'code' => 201,
@@ -16,14 +16,12 @@ class ResponseCodeHandler
         ];
     }
 
-    public static function ok($message = 'OK', $cookie=null): array
+    public static function ok($message = 'OK', $cookie=['value'=>'', 'name'=>'', 'expires'=>'', 'max-age'=>'']): array
     {
         http_response_code(200);
-
-        if($cookie){
-            header('Set-Cookie: cookie-session='. $cookie . '; domain=localhost; HttpOnly; Secure; SameSite=strict; Path="./"');
+        if($cookie['value'] !== ''){
+            header('Set-Cookie: ' . $cookie['name'] . '='. $cookie['value'] . '; Max-Age='. $cookie['max-age'] . '; HttpOnly; Secure; SameSite=strict; Path="./"');
         }
-
         return [
             'code' => 200,
             'message' => $message,
