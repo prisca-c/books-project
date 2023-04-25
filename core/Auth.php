@@ -48,4 +48,15 @@ class Auth
             return false;
         }
     }
+
+    public static function decodeToken(string $token): array
+    {
+        $secret = $_ENV['SECRET_KEY'];
+        try {
+            $decoded = JWT::decode($token, new Key($secret,'HS256'), ['HS256']);
+            return (array) $decoded;
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
 }
