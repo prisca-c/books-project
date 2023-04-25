@@ -77,7 +77,8 @@ class LoginController extends \Core\Controller
         $user = $this->users->findAllBy('username', $username)[0];
 
         $JWT = Auth::generateToken($user['id']);
+        $cookie = ['name'=>'cookie-session','value'=>$JWT, 'max-age'=>'86400'];
 
-        return $this->response->created('Created', $JWT);
+        return $this->response->created('Created', $cookie);
     }
 }
