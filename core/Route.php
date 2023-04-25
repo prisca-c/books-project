@@ -2,6 +2,8 @@
 
 namespace Core;
 
+use Routes\Middleware;
+
 class Route
 {
     private string $path;

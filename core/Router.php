@@ -3,6 +3,7 @@
 namespace Core;
 
 use Exception;
+use Routes\Middleware;
 
 class Router
 {
@@ -14,37 +15,43 @@ class Router
         $this->url = $url;
     }
 
-    public function get($path, $callable, $name = null): Route
+    public function get($path, $callable, $name = null, $middleware=false): Route
     {
-        return $this->add($path, $callable, $name, "GET");
+        return $this->add($path, $callable, $name, "GET", $middleware);
     }
 
-    public function post($path, $callable, $name = null): Route
+    public function post($path, $callable, $name = null, $middleware=false): Route
     {
-        return $this->add($path, $callable, $name, "POST");
+        return $this->add($path, $callable, $name, "POST", $middleware);
     }
 
-    public function put($path, $callable, $name = null): Route
+    public function put($path, $callable, $name = null, $middleware=false): Route
     {
-        return $this->add($path, $callable, $name, "PUT");
+        return $this->add($path, $callable, $name, "PUT", $middleware);
     }
 
-    public function delete($path, $callable, $name = null): Route
+    public function delete($path, $callable, $name = null, $middleware=false): Route
     {
-        return $this->add($path, $callable, $name, "DELETE");
+        return $this->add($path, $callable, $name, "DELETE", $middleware);
     }
 
-    public function resources($path, $controller): void
+    public function resources($path, $controller,$name=null, $middleware=false): void
     {
-        $this->get("$path", "$controller#index");
-        $this->post("$path", "$controller#store");
-        $this->get("$path/id/:id", "$controller#show");
-        $this->put("$path/id/:id", "$controller#update");
-        $this->delete("$path/id/:id", "$controller#delete");
+        $this->get("$path", "$controller#index", $name, $middleware);
+        $this->post("$path", "$controller#store", $name, $middleware);
+        $this->get("$path/id/:id", "$controller#show", $name, $middleware);
+        $this->put("$path/id/:id", "$controller#update", $name, $middleware);
+        $this->delete("$path/id/:id", "$controller#delete", $name, $middleware);
     }
 
-    private function add($path, $callable, $name, $method): Route
+    /**
+     * @throws Exception
+     */
+    private function add($path, $callable, $name, $method, $middleware): Route
     {
+        if($name === ''){
+            $name = null;
+        }
         $route = new Route($path, $callable);
         $this->routes[$method][] = $route;
         if(is_string($callable) && $name === null){
@@ -53,7 +60,19 @@ class Router
         if($name){
             $this->namedRoutes[$name] = $route;
         }
-        return $route;
+
+        if($middleware){
+            $session = Middleware::verifyCookieHeader();
+            if($session){
+                return $route;
+            } else {
+                throw new Exception("Unauthorized");
+            }
+        } elseif (!$middleware) {
+            return $route;
+        } else {
+            throw new Exception("Middleware must be true or false");
+        }
     }
 
     /**

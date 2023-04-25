@@ -11,22 +11,21 @@ class Routes
     public static function routes(): void
     {
         $routes = new Router($_SERVER['REQUEST_URI']);
-        $routes->resources('/books', 'Books');
-        $routes->post('/search', 'Books#searchBooks');
-        $routes->resources('/authors', 'Authors');
-        $routes->resources('/publishers', 'Publishers');
-        $routes->resources('/tags', 'Tags');
-        $routes->resources('/ratings', 'Ratings');
-        $routes->resources('/libraries', 'Libraries');
-        $routes->resources('/wishlists', 'Wishlists');
-        $routes->resources('/users', 'Users');
-        $routes->resources('/editions', 'Editions');
+        $routes->resources('/books', 'Books', '', true);
+        $routes->post('/search', 'Books#searchBooks', '', true);
+        $routes->resources('/authors', 'Authors', '', true);
+        $routes->resources('/publishers', 'Publishers', '', true);
+        $routes->resources('/tags', 'Tags', '', true);
+        $routes->resources('/ratings', 'Ratings', '', true);
+        $routes->resources('/libraries', 'Libraries', '', true);
+        $routes->resources('/wishlists', 'Wishlists', '', true);
+        $routes->resources('/users', 'Users', '', true);
+        $routes->resources('/editions', 'Editions', '', true);
+        $routes->get('/users/id/:id/wishlist/count', 'Wishlists#getCount', '', true);
+        $routes->get('/users/id/:id/libraries/current/count', 'Libraries#getLibraryCurrentReadingCount', '', true);
 
         $routes->post('/login', 'Login#login');
         $routes->post('/register', 'Login#register');
-
-        $routes->get('/users/id/:id/wishlist/count', 'Wishlists#getCount');
-        $routes->get('/users/id/:id/libraries/current/count', 'Libraries#getLibraryCurrentReadingCount');
 
         try {
             $routes->run();
