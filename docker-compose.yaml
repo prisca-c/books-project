@@ -23,8 +23,6 @@ services:
       test: [ "CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}" ]
       retries: 3
       timeout: 5s
-    networks:
-      - app-tier
 
   redis:
     container_name: redis_books
@@ -33,5 +31,16 @@ services:
       - '6379:6379'
     volumes:
       - cache:/books_data
+    networks:
+      - app-tier
+
+  redis_insight:
+    container_name: redis_insight-books
+    image: redislabs/redisinsight
+    ports:
+      - "8001:8001"
+    networks:
+      - app-tier
+
 volumes:
   cache:
