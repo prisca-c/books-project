@@ -15,27 +15,27 @@ class Router
         $this->url = $url;
     }
 
-    public function get($path, $callable, $name = null, $middleware=false): Route
+    public function get($path, $callable, $middleware=false, $name=null): Route
     {
         return $this->add($path, $callable, $name, "GET", $middleware);
     }
 
-    public function post($path, $callable, $name = null, $middleware=false): Route
+    public function post($path, $callable, $middleware=false, $name=null): Route
     {
         return $this->add($path, $callable, $name, "POST", $middleware);
     }
 
-    public function put($path, $callable, $name = null, $middleware=false): Route
+    public function put($path, $callable, $middleware=false, $name=null): Route
     {
         return $this->add($path, $callable, $name, "PUT", $middleware);
     }
 
-    public function delete($path, $callable, $name = null, $middleware=false): Route
+    public function delete($path, $callable, $middleware=false, $name=null): Route
     {
         return $this->add($path, $callable, $name, "DELETE", $middleware);
     }
 
-    public function resources($path, $controller,$name=null, $middleware=false): void
+    public function resources($path, $controller, $middleware=false, $name=null): void
     {
         $this->get("$path", "$controller#index", $name, $middleware);
         $this->post("$path", "$controller#store", $name, $middleware);
@@ -52,7 +52,7 @@ class Router
         if($name === ''){
             $name = null;
         }
-        $route = new Route($path, $callable);
+        $route = new Route($path, $callable, $middleware);
         $this->routes[$method][] = $route;
         if(is_string($callable) && $name === null){
             $name = $callable;

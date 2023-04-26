@@ -8,12 +8,14 @@ class Route
 {
     private string $path;
     private mixed $callable;
+    private $middleware;
     private array $matches = [];
     private array $params = [];
 
-    public function __construct($path, $callable){
+    public function __construct($path, $callable, $middleware){
         $this->path = trim($path, "/");
         $this->callable = $callable;
+        $this->middleware = $middleware;
     }
 
     public function match($url): bool
@@ -37,6 +39,16 @@ class Route
 
     public function call(): void
     {
+        if($this->middleware)
+        {
+            $session = Middleware::verifyCookieHeader();
+            if(!$session){
+                http_response_code(401);
+                echo json_encode(['code'=>401, 'error' => 'Unauthorized'], JSON_PRETTY_PRINT);
+                return;
+            }
+        }
+
         if(is_string($this->callable)){
             $params = explode("#", $this->callable);
             $controller = "App\\Controllers\\" . $params[0] . "Controller";
