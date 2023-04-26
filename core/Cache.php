@@ -20,10 +20,10 @@ class Cache
 
     public static function __callStatic(string $method, array $arguments)
     {
-        call_user_func_array([self::getRedis(), $method], $arguments);
+        return call_user_func_array([self::redis(), $method], $arguments);
     }
 
-    protected static function getRedis():\Redis
+    public static function redis():\Redis
     {
         if(!self::$redis)
         {
