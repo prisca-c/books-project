@@ -2,63 +2,55 @@
 
 namespace Core\Database;
 
-use Helpers\ArrayHandler;
 
 class QueryMethods extends QueryMethodsExtends
 {
-    public static function findAll(string $table, array $selectedFields = ['*']): array
+    public static function findAll(string $table): array
     {
-        $selectedFields = ArrayHandler::implodeArray($selectedFields, ', ');
-        $query = (new Database)->connect()->prepare(
-            "SELECT * FROM $table"
-        );
-        $query->execute();
-        return $query->fetchAll();
+        $query = (new Database)->connect()->__get($table);
+        return $query->find()->toArray();
     }
 
-    public static function findById(string $table, int $id, array $selectedFields = ['*']): array
+    public static function findById(string $table, int $id): array
     {
-        $selectedFields = ArrayHandler::implodeArray($selectedFields, ', ');
-        $query = (new Database)->connect()->prepare(
-            "SELECT * FROM $table WHERE id = :id"
-        );
-        $query->bindParam(':id', $id);
-        $query->execute();
-        return $query->fetch();
+      $query = (new Database)->connect()->__get($table);
+      return $query->find($id)->toArray();
     }
 
-    public static function create(string $table, array $data, array $fillable): void
+    /**
+     *
+     * @param string $table
+     * @param array $data
+     * @return void
+     */
+    public static function create(string $table, array $data):void
     {
-        $query = (new Database)->connect()->prepare(
-            "INSERT INTO $table (" . implode(',', $fillable) . ") 
-            VALUES (" . implode(',', array_map(fn ($item) => ":$item", $fillable)) . ")"
-        );
-        foreach ($fillable as $item) {
-            $query->bindParam(":$item", $data[$item]);
-        }
-        $query->execute();
+      $query = (new Database)->connect()->__get($table);
+      $query->insertOne($data);
     }
 
-    public static function update(string $table, array $data, array $fillable, int $id): void
+    /**
+     *
+     * @param string $table
+     * @param array $data
+     * @param integer $id
+     * @return void
+     */
+    public static function update(string $table, array $data, int $id): void
     {
-        $query = (new Database)->connect()->prepare(
-            "UPDATE $table 
-            SET " . implode(',', array_map(fn ($item) => "$item = :$item", $fillable)) . "
-            WHERE id = :id"
-        );
-        foreach ($fillable as $item) {
-            $query->bindParam(":$item", $data[$item]);
-        }
-        $query->bindParam(':id', $id);
-        $query->execute();
+      $query = (new Database)->connect()->__get($table);
+      $query->updateOne($data, $id);
     }
 
+    /**
+     *
+     * @param string $table
+     * @param integer $id
+     * @return void
+     */
     public static function deleteById(string $table, int $id): void
     {
-        $query = (new Database)->connect()->prepare(
-            "DELETE FROM $table WHERE id = :id"
-        );
-        $query->bindParam(':id', $id);
-        $query->execute();
+      $query = (new Database)->connect()->__get($table);
+      $query->deleteOne($id);
     }
 }
