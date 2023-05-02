@@ -81,4 +81,29 @@ class LoginController extends \Core\Controller
 
         return $this->response->created('Created', $cookie);
     }
+
+    public function logout (string $id): array
+    {
+        $cookie = ['name'=>'cookie-session','value'=>'', 'max-age'=>'0'];
+        if(Cache::redis()->get('auth:users:' . $id) !== null){
+            Cache::redis()->del('auth:users:' . $id);
+        }
+        return $this->response->ok('Logout Successful', $cookie);
+    }
+
+    public function checkSession (): array
+    {
+        $cookie = ['name'=>'cookie-session','value'=>'', 'max-age'=>'0'];
+        $JWT = $_COOKIE('cookie-session');
+        if($JWT === null){
+            return $this->response->notFound('Not found', $cookie);
+        }
+
+        $id = Auth::verifyToken($JWT);
+        if(!$id){
+            return $this->response->ok('No session', $cookie);
+        }
+
+        return $this->response->ok('Session exists');
+    }
 }
