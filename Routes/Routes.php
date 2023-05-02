@@ -23,6 +23,8 @@ class Routes
         $routes->resources('/editions', 'Editions', '', true);
         $routes->get('/users/id/:id/wishlist/count', 'Wishlists#getCount', '', true);
         $routes->get('/users/id/:id/libraries/current/count', 'Libraries#getLibraryCurrentReadingCount', '', true);
+        $routes->post('/update/password', 'Profile#updatePassword', true);
+        $routes->post('/update/details', 'Profile#updateDetails', true);
 
         $routes->post('/login', 'Login#login');
         $routes->post('/register', 'Login#register');
