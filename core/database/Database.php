@@ -6,7 +6,7 @@ use Core\EnvLoader;
 use Dotenv\Dotenv;
 use MongoDB;
 use MongoDB\Client;
-use PDO;
+use MongoDB\Database as MongoDBDatabase;
 
 class Database
 {
@@ -25,26 +25,16 @@ class Database
     }
 
     /* connect to mysql database */
-    public function connect(): Client
+    public function connect(): MongoDBDatabase
     {
         $uri = 'mongodb://localhost:27017';
-        return new MongoDB\Client($uri);
+        $client = new MongoDB\Client($uri);
+        return $client->selectDatabase('books');
     }
 
     public static function drop(): void
     {
-
-//        EnvLoader::envLoader();
-//
-//        $db = (new Database())->connect();
-//        $tables = $db->query("SHOW TABLES")->fetchAll();
-//        $db->query("SET FOREIGN_KEY_CHECKS = 0");
-//        $database = database_config::getDbName();
-//        foreach ($tables as $table) {
-//            $table = $table['Tables_in_'.$database];
-//            $db->query("DROP TABLE $table");
-//        }
-//        $db->query("SET FOREIGN_KEY_CHECKS = 1");
+      (new Database)->connect()->drop();
     }
 
 
