@@ -32,6 +32,7 @@
         "ext-pdo": "*",
         "firebase/php-jwt": "^6.4",
         "vlucas/phpdotenv": "^5.5",
-        "ext-redis": "*"
+        "ext-redis": "*",
+        "mongodb/mongodb": "^1.15"
     }
 }

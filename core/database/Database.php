@@ -2,9 +2,10 @@
 
 namespace Core\Database;
 
-use Config\database_config;
 use Core\EnvLoader;
 use Dotenv\Dotenv;
+use MongoDB;
+use MongoDB\Client;
 use PDO;
 
 class Database
@@ -17,35 +18,33 @@ class Database
 
     public function __construct()
     {
-        $this->servername = database_config::getDbHost();
-        $this->username = database_config::getDbUser();
-        $this->password = database_config::getDbPassword();
-        $this->dbname = database_config::getDbName();
+//        $this->servername = database_config::getDbHost();
+//        $this->username = database_config::getDbUser();
+//        $this->password = database_config::getDbPassword();
+//        $this->dbname = database_config::getDbName();
     }
 
     /* connect to mysql database */
-    public function connect(): PDO
+    public function connect(): Client
     {
-        return new PDO("mysql:host=$this->servername;dbname=$this->dbname", $this->username, $this->password, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]);
+        $uri = 'mongodb://localhost:27017';
+        return new MongoDB\Client($uri);
     }
 
     public static function drop(): void
     {
 
-        EnvLoader::envLoader();
-
-        $db = (new Database())->connect();
-        $tables = $db->query("SHOW TABLES")->fetchAll();
-        $db->query("SET FOREIGN_KEY_CHECKS = 0");
-        $database = database_config::getDbName();
-        foreach ($tables as $table) {
-            $table = $table['Tables_in_'.$database];
-            $db->query("DROP TABLE $table");
-        }
-        $db->query("SET FOREIGN_KEY_CHECKS = 1");
+//        EnvLoader::envLoader();
+//
+//        $db = (new Database())->connect();
+//        $tables = $db->query("SHOW TABLES")->fetchAll();
+//        $db->query("SET FOREIGN_KEY_CHECKS = 0");
+//        $database = database_config::getDbName();
+//        foreach ($tables as $table) {
+//            $table = $table['Tables_in_'.$database];
+//            $db->query("DROP TABLE $table");
+//        }
+//        $db->query("SET FOREIGN_KEY_CHECKS = 1");
     }
 
 
