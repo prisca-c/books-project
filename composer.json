@@ -33,6 +33,7 @@
         "firebase/php-jwt": "^6.4",
         "vlucas/phpdotenv": "^5.5",
         "ext-redis": "*",
-        "mongodb/mongodb": "^1.15"
+        "mongodb/mongodb": "^1.15",
+        "ext-mongodb": "*"
     }
 }
