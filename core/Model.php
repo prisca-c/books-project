@@ -4,6 +4,7 @@ namespace Core;
 
 use Core\Database\QueryMethods;
 use Helpers\ModelHandler;
+use MongoDB\InsertOneResult;
 
 abstract class Model
 {
@@ -23,12 +24,17 @@ abstract class Model
 
     public function findAll(): array
     {
-        return $this->query->findAll($this->table, $this->fillable);
+        return $this->query->findAll($this->table);
     }
 
     public function findById(int $id): array
     {
-        return $this->query->findById($this->table, $id, $this->fillable);
+        return $this->query->findById($this->table, $id);
+    }
+
+    public function findBy(string $field, string $value): array
+    {
+        return $this->query->findBy($this->table, $field, $value);
     }
 
     public function deleteById(int $id): array
@@ -37,15 +43,15 @@ abstract class Model
         return $this->response->ok('Deleted');
     }
 
-    public function create(array $data): array
+    public function create(array $data): InsertOneResult
     {
-        $this->query->create($this->table, $data, $this->fillable);
-        return $this->response->created();
+        return $this->query->create($this->table, $data);
+        //return $this->response->created();
     }
 
     public function update(array $data): array
     {
-        $this->query->update($this->table, $data, $this->fillable, $data['id']);
+        $this->query->update($this->table, $data, $data['id']);
         return $this->response->ok('Updated');
     }
 
@@ -56,7 +62,7 @@ abstract class Model
 
     public function deleteBy(array $data): array
     {
-        $this->query->deleteBy($this->table, $this->fillable, $data);
+        $this->query->deleteBy($this->table, $data);
         return $this->response->ok('Deleted');
     }
 

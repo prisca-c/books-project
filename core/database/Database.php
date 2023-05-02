@@ -29,7 +29,7 @@ class Database
     {
         $uri = 'mongodb://localhost:27017';
         $client = new MongoDB\Client($uri);
-        return $client->selectDatabase('books');
+        return $client->books_project;
     }
 
     public static function drop(): void

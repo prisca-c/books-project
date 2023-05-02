@@ -3,11 +3,11 @@
 namespace Core;
 
 use Core\Database\Database;
-use PDO;
+use MongoDB\Database as MongoDBDatabase;
 
 abstract class Controller
 {
-    protected PDO $db;
+    protected MongoDBDatabase $db;
     protected ResponseCodeHandler $response;
 
     public function __construct()
