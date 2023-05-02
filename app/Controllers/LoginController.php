@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\User;
 use Core\Auth;
+use Core\Cache;
 use Exception;
 
 class LoginController extends \Core\Controller
@@ -33,9 +34,10 @@ class LoginController extends \Core\Controller
             return $this->response->internalServerError('Username or password is incorrect');
         }
 
-        $token = Auth::generateToken($user['id']);
+        $JWT = Auth::generateToken($user['id']);
+        $cookie = ['name'=>'cookie-session','value'=>$JWT, 'max-age'=>'86400'];
 
-        return array_merge($this->response->ok('Login Successful'), ['token' => $token]);
+        return array_merge($this->response->ok('Login Successful', $cookie));
     }
 
     /**
