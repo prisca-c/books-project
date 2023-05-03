@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\User;
 use Core\Auth;
 use Core\Cache;
+use Core\Database\QueryMethods;
 use Exception;
 
 class LoginController extends \Core\Controller
@@ -29,15 +30,17 @@ class LoginController extends \Core\Controller
             return $this->response->internalServerError('Username or password cannot be empty');
         }
 
-        $user = $this->users->findAllBy('username', $username)[0];
+        $user = $this->users->findByOne('username', $username);
+        $userId = (string)$user->_id;
         if (empty($user) or !password_verify($password, $user['password'])) {
             return $this->response->internalServerError('Username or password is incorrect');
         }
 
-        $JWT = Auth::generateToken($user['id']);
-        $cookie = ['name'=>'cookie-session','value'=>$JWT, 'max-age'=>'86400'];
+        $JWT = Auth::generateToken($userId);
+        setcookie('cookie-session', $JWT, time() + 86400, '/', '', true, true);
+        setcookie('user-id', $userId, time() + 86400, '/', '', true, false);
 
-        return array_merge($this->response->ok('Login Successful', $cookie));
+        return $this->response->ok('Login Successful');
     }
 
     /**
@@ -76,12 +79,13 @@ class LoginController extends \Core\Controller
         $data['password'] = $password;
 
         $result = $this->users->create($data);
-        $user = $this->users->findBy('username', $username)[0];
+        $userId = $result->getInsertedId();
 
-        $JWT = Auth::generateToken($result->getInsertedId());
-        $cookie = ['name'=>'cookie-session','value'=>$JWT, 'max-age'=>'86400'];
+        $JWT = Auth::generateToken($userId);
+        setcookie('cookie-session', $JWT, time() + 86400, '/', '', true, true);
+        setcookie('user-id', $userId, time() + 86400, '/', '', true, false);
 
-        return $this->response->created('Created', $cookie);
+        return $this->response->created('Created');
     }
 
     public function logout (string $id): array
