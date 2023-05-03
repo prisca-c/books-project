@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Wishlist;
 use Core\Controller;
+use MongoDB\Model\BSONDocument;
 
 class WishlistsController extends Controller
 {
@@ -20,7 +21,7 @@ class WishlistsController extends Controller
         return $this->wishlists->findAll();
     }
 
-    public function show(string|int $id): array
+    public function show(string|int $id): BSONDocument
     {
         return $this->wishlists->findById($id);
     }

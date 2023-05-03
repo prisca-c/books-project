@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Library;
 use Core\Controller;
+use MongoDB\Model\BSONDocument;
 
 class LibrariesController extends Controller
 {
@@ -20,7 +21,7 @@ class LibrariesController extends Controller
         return $this->libraries->findAll();
     }
 
-    public function show(string $id): array
+    public function show(string $id): BSONDocument
     {
         return $this->libraries->findById($id);
     }

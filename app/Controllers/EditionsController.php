@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Edition;
 use Core\Controller;
+use MongoDB\Model\BSONDocument;
 
 class EditionsController extends Controller
 {
@@ -20,7 +21,7 @@ class EditionsController extends Controller
         return $this->editions->findAll();
     }
 
-    public function show(string $id): array
+    public function show(string $id): BSONDocument
     {
         return $this->editions->findById($id);
     }

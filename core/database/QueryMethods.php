@@ -3,6 +3,8 @@
 namespace Core\Database;
 
 use MongoDB\InsertOneResult;
+use MongoDB\Model\BSONDocument;
+use webObj;
 
 
 class QueryMethods extends QueryMethodsExtends
@@ -13,10 +15,10 @@ class QueryMethods extends QueryMethodsExtends
         return $query->find()->toArray();
     }
 
-    public static function findById(string $table, int $id): array
+    public static function findById(string $table, string $id): BSONDocument
     {
       $query = (new Database)->connect()->$table;
-      return $query->find($id)->toArray();
+      return $query->findOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
     }
 
     /**
@@ -32,6 +34,12 @@ class QueryMethods extends QueryMethodsExtends
       return $query->find([$field => $value])->toArray();
     }
 
+    public static function findByOne(string $table, $field, $value): BSONDocument | null
+    {
+      $query = (new Database)->connect()->$table;
+      return $query->findOne([$field => $value]);
+    }
+
     /**
      *
      * @param string $table
@@ -41,6 +49,8 @@ class QueryMethods extends QueryMethodsExtends
     public static function create(string $table, array $data): InsertOneResult
     {
       $query = (new Database)->connect()->__get($table);
+      $data['created_at'] = date('Y-m-d H:i:s');
+      $data['updated_at'] = date('Y-m-d H:i:s');
       return $query->insertOne($data);
     }
 
@@ -51,10 +61,11 @@ class QueryMethods extends QueryMethodsExtends
      * @param integer $id
      * @return void
      */
-    public static function update(string $table, array $data, int $id): void
+    public static function update(string $table, BSONDocument $data, string $id): void
     {
       $query = (new Database)->connect()->$table;
-      $query->updateOne($data, $id);
+      $data['updated_at'] = date('Y-m-d H:i:s');
+      $query->updateOne(['_id' => new \MongoDB\BSON\ObjectId($id)], ['$set' => $data]);
     }
 
     /**
@@ -63,7 +74,7 @@ class QueryMethods extends QueryMethodsExtends
      * @param integer $id
      * @return void
      */
-    public static function deleteById(string $table, int $id): void
+    public static function deleteById(string $table, string $id): void
     {
       $query = (new Database)->connect()->$table;
       $query->deleteOne($id);

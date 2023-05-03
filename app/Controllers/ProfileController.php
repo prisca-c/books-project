@@ -64,13 +64,13 @@ class ProfileController extends Controller
         $usernameExist = false;
 
         if($user['email'] !== $email) {
-            $emailExist = $this->users->findAllBy('email', $email);
-            $emailExist[0] ? $emailExist = true : $emailExist = false;
+            $emailExist = $this->users->findByOne('email', $email);
+            $emailExist ? $emailExist = true : $emailExist = false;
         }
 
         if($user['username'] !== $username) {
-            $usernameExist = $this->users->findAllBy('username', $username);
-            $usernameExist[0] ? $usernameExist = true : $usernameExist = false;
+            $usernameExist = $this->users->findByOne('username', $username);
+            $usernameExist ? $usernameExist = true : $usernameExist = false;
         }
 
         // Username Match
@@ -90,9 +90,4 @@ class ProfileController extends Controller
         $this->users->update($user);
         return $this->response->ok('Details updated');
     }
-
-//    public function __invoke(): void
-//    {
-//        echo 'Test Invoke';
-//    }
 }

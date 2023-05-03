@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Models\User;
 use Core\Controller;
 use Exception;
+use MongoDB\Model\BSONDocument;
 
 class UsersController extends Controller
 {
@@ -33,7 +34,7 @@ class UsersController extends Controller
         return $this->users->create($data);
     }
 
-    public function show(string $id): false|array
+    public function show(string $id): BSONDocument|array
     {
         return $this->users->findById($id);
     }

@@ -5,6 +5,7 @@ namespace Core;
 use Core\Database\QueryMethods;
 use Helpers\ModelHandler;
 use MongoDB\InsertOneResult;
+use MongoDB\Model\BSONDocument;
 
 abstract class Model
 {
@@ -27,7 +28,7 @@ abstract class Model
         return $this->query->findAll($this->table);
     }
 
-    public function findById(int $id): array
+    public function findById(string $id): BSONDocument
     {
         return $this->query->findById($this->table, $id);
     }
@@ -37,7 +38,12 @@ abstract class Model
         return $this->query->findBy($this->table, $field, $value);
     }
 
-    public function deleteById(int $id): array
+    public function findByOne(string $field, string $value): BSONDocument | null
+    {
+        return $this->query->findByOne($this->table, $field, $value);
+    }
+
+    public function deleteById(string $id): array
     {
         $this->query->deleteById($this->table, $id);
         return $this->response->ok('Deleted');
@@ -49,9 +55,9 @@ abstract class Model
         //return $this->response->created();
     }
 
-    public function update(array $data): array
+    public function update(BSONDocument $data): array
     {
-        $this->query->update($this->table, $data, $data['id']);
+        $this->query->update($this->table, $data, $data['_id']);
         return $this->response->ok('Updated');
     }
 
