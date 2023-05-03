@@ -7,6 +7,7 @@ use App\Models\BookTagRelation;
 use App\Models\Tag;
 use Core\Controller;
 use Helpers\QueryHandler;
+use MongoDB\Model\BSONDocument;
 
 class BooksController extends Controller
 {
@@ -23,13 +24,27 @@ class BooksController extends Controller
         return $this->books->findAll();
     }
 
-    public function show(string|int $id): array
+    public function show(string|int $id): BSONDocument
     {
         return $this->books->findById($id);
     }
 
     public function store(array $data): void
     {
+        $data = $data['data'];
+        
+        $authors = $data['authors'];
+        $tags = $data['tags'];
+        $synopsis = $data['synopsis'];
+        $title = $data['title'];
+
+        if (empty($authors) || empty($tags) || empty($synopsis) || empty($title)) {
+            $this->response->internalServerError('Missing data');
+        }
+
+        $data['rating'] = 0;
+        $data['editions'] = [];
+
         $this->books->create($data);
     }
 
