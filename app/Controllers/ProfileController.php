@@ -65,12 +65,12 @@ class ProfileController extends Controller
 
         if($user['email'] !== $email) {
             $emailExist = $this->users->findAllBy('email', $email);
-            $emailExist[0] ? $emailExist = true : $emailExist = false;
+            $emailExist ? $emailExist = true : $emailExist = false;
         }
 
         if($user['username'] !== $username) {
             $usernameExist = $this->users->findAllBy('username', $username);
-            $usernameExist[0] ? $usernameExist = true : $usernameExist = false;
+            $usernameExist ? $usernameExist = true : $usernameExist = false;
         }
 
         // Username Match
