@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Book;
+use Core\Database\Database;
+use Core\Database\QueryMethods;
 class BookSeeder
 {
     public static function seed(): void
@@ -18,8 +20,11 @@ class BookSeeder
             ['title' => 'The Shining', 'authors_id' => 4, 'publishers_id' => 4, 'published_at' => '1977', 'synopsis' => 'The Shining is a horror novel by American author Stephen King.']
         ];
 
-        foreach ($books as $book) {
-            (new Book())->create($book);
-        }
+        //foreach ($books as $book) {
+        //    (new Database)->connect()->books->insertOne($book);
+        //}
+        //
+
+        (new Database)->connect()->books->insertMany($books);
     }
 }

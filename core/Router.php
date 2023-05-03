@@ -37,11 +37,11 @@ class Router
 
     public function resources($path, $controller, $middleware=false, $name=null): void
     {
-        $this->get("$path", "$controller#index", $name, $middleware);
-        $this->post("$path", "$controller#store", $name, $middleware);
-        $this->get("$path/id/:id", "$controller#show", $name, $middleware);
-        $this->put("$path/id/:id", "$controller#update", $name, $middleware);
-        $this->delete("$path/id/:id", "$controller#delete", $name, $middleware);
+        $this->get("$path", "$controller#index", $middleware, $name);
+        $this->post("$path", "$controller#store", $middleware, $name);
+        $this->get("$path/id/:id", "$controller#show", $middleware, $name);
+        $this->put("$path/id/:id", "$controller#update", $middleware, $name);
+        $this->delete("$path/id/:id", "$controller#delete", $middleware, $name);
     }
 
     /**
@@ -61,18 +61,20 @@ class Router
             $this->namedRoutes[$name] = $route;
         }
 
-        if($middleware){
-            $session = Middleware::verifyCookieHeader();
-            if($session){
-                return $route;
-            } else {
-                throw new Exception("Unauthorized");
-            }
-        } elseif (!$middleware) {
-            return $route;
-        } else {
-            throw new Exception("Middleware must be true or false");
-        }
+        return $route;
+
+//        if($middleware){
+//            $session = Middleware::verifyCookieHeader();
+//            if($session){
+//                return $route;
+//            } else {
+//                throw new Exception("Unauthorized");
+//            }
+//        } elseif (!$middleware) {
+//            return $route;
+//        } else {
+//            throw new Exception("Middleware must be true or false");
+//        }
     }
 
     /**

@@ -26,8 +26,20 @@ class Routes
         $routes->post('/update/password', 'Profile#updatePassword', true);
         $routes->post('/update/details', 'Profile#updateDetails', true);
 
+        $routes->get('/users/id/:id/wishlist/count', 'Wishlists#getCount', true);
+        $routes->get('/users/id/:id/libraries/current/count', 'Libraries#getLibraryCurrentReadingCount', true);
+        $routes->get('/users/ratings', 'Ratings#getUserRatings', true); // TODO: create a method
+        // TODO:
+        // Routes: Books/rating |
+
+        $routes->post('/update/password', 'Profile#updatePassword', true);
+        $routes->post('/update/details', 'Profile#updateDetails', true);
+
         $routes->post('/login', 'Login#login');
+        $routes->post('/logout', 'Login#logout');
         $routes->post('/register', 'Login#register');
+
+        $routes->get('/session/check', 'Login#checkSession');
 
         try {
             $routes->run();
@@ -44,3 +56,12 @@ class Routes
         }
     }
 }
+
+//
+//class LibraryType {
+//
+//}
+//
+//function library(array $library) : LibraryType {
+//    return new LibraryType($library);
+//}

@@ -28,12 +28,12 @@ class Auth
 
         $JWT = JWT::encode($payload, $secret, 'HS256');
 
-        if (Cache::get('auth:users:'.$id))
+        if (Cache::redis()->get('auth:users:'.$id))
         {
-            Cache::del('auth:users:'.$id);
+            Cache::redis()->del('auth:users:'.$id);
         }
 
-        Cache::set('auth:users:'.$id, $JWT, 86400);
+        Cache::redis()->set('auth:users:'.$id, $JWT, 86400);
 
         return $JWT;
     }
@@ -41,17 +41,31 @@ class Auth
     public static function verifyToken(string $token): bool
     {
         $secret = $_ENV['SECRET_KEY'];
+        $checkToken = self::decodeToken($token);
+
+        if($checkToken)
+        {
+            if(Cache::redis()->get('auth:users:'.$checkToken['id']) === $token)
+            {
+                try {
+                    $decoded = JWT::decode($token, new Key($secret, 'HS256'));
+                    return true;
+                } catch (\Exception $e) {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static function decodeToken(string $token): array|false
+    {
         try {
-            $decoded = JWT::decode($token, new Key($secret,'HS256'));
-            return true;
+            $decoded = JWT::decode($token, new Key($_ENV['SECRET_KEY'], 'HS256'), ['HS256']);
+            return (array)$decoded;
         } catch (\Exception $e) {
             return false;
         }
-    }
 
-    public static function decodeToken(string $token): array
-    {
-        $decoded = JWT::decode($token, new Key($_ENV['SECRET_KEY'],'HS256'), ['HS256']);
-        return (array) $decoded;
     }
 }

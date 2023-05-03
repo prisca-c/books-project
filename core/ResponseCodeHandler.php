@@ -58,9 +58,12 @@ class ResponseCodeHandler
     /**
      * @throws \Exception
      */
-    public static function notFound($message = 'Not Found'): array
+    public static function notFound($message = 'Not Found', $cookie=['value'=>'', 'name'=>'', 'expires'=>'', 'max-age'=>'']): array
     {
         http_response_code(404);
+        if($cookie['value'] !== ''){
+            header('Set-Cookie: ' . $cookie['name'] . '='. $cookie['value'] . '; Max-Age='. $cookie['max-age'] . '; HttpOnly; Secure; SameSite=strict; Path="./"');
+        }
         throw new \Exception($message, 404);
     }
 
