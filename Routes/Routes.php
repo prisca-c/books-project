@@ -13,9 +13,6 @@ class Routes
         $routes = new Router($_SERVER['REQUEST_URI']);
         $routes->resources('/books', 'Books', '', true);
         $routes->post('/search', 'Books#searchBooks', '', true);
-        $routes->resources('/authors', 'Authors', '', true);
-        $routes->resources('/publishers', 'Publishers', '', true);
-        $routes->resources('/tags', 'Tags', '', true);
         $routes->resources('/ratings', 'Ratings', '', true);
         $routes->resources('/libraries', 'Libraries', '', true);
         $routes->resources('/wishlists', 'Wishlists', '', true);
@@ -23,8 +20,6 @@ class Routes
         $routes->resources('/editions', 'Editions', '', true);
         $routes->get('/users/id/:id/wishlist/count', 'Wishlists#getCount', '', true);
         $routes->get('/users/id/:id/libraries/current/count', 'Libraries#getLibraryCurrentReadingCount', '', true);
-        $routes->post('/update/password', 'Profile#updatePassword', true);
-        $routes->post('/update/details', 'Profile#updateDetails', true);
 
         $routes->get('/users/id/:id/wishlist/count', 'Wishlists#getCount', true);
         $routes->get('/users/id/:id/libraries/current/count', 'Libraries#getLibraryCurrentReadingCount', true);
