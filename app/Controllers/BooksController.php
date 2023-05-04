@@ -136,41 +136,30 @@ class BooksController extends Controller
         $search = $data['search'];
         $page = $data['page'];
         $skip = ($page - 1) * 10;
-        $query = $this->db->prepare(
-            'SELECT books.id, books.title, books.published_at, authors.name AS author_name, publishers.name AS publisher_name, ROUND(AVG(ratings.rating),2) AS rating, 
-                (
-                    SELECT JSON_ARRAYAGG(JSON_OBJECT("id", tags.id, "name", tags.name))
-                    FROM book_tag_relations
-                    LEFT JOIN tags ON tags.id = book_tag_relations.tags_id
-                    WHERE book_tag_relations.books_id = books.id
-                ) AS tags,
-                (
-                    SELECT JSON_ARRAYAGG(JSON_OBJECT("id", editions.id, "format", editions.format))
-                    FROM editions
-                    WHERE editions.books_id = books.id
-                ) AS editions
-                FROM books
-                LEFT JOIN authors ON authors.id = books.authors_id
-                LEFT JOIN book_tag_relations ON book_tag_relations.books_id = books.id
-                LEFT JOIN publishers ON publishers.id = books.publishers_id
-                LEFT JOIN tags ON tags.id = book_tag_relations.tags_id
-                LEFT JOIN editions ON books.id = editions.books_id
-                LEFT JOIN ratings ON books.id = ratings.books_id
-                WHERE 
-                    books.title LIKE CONCAT(\'%\', :search, \'%\')
-                    OR authors.name LIKE CONCAT(\'%\', :search, \'%\') 
-                    OR publishers.name LIKE CONCAT(\'%\', :search, \'%\')
-                    OR tags.name LIKE CONCAT(\'%\', :search, \'%\')
-                GROUP BY books.id, books.published_at
-                ORDER BY books.published_at DESC
-                LIMIT :skip, 10;
-            '
-        );
-        $query->bindParam(':search', $search);
-        $query->bindParam(':skip', $skip, \PDO::PARAM_INT);
-        $query->execute();
-        $results = $query->fetchAll();
-        $values = ['tags', 'editions'];
-        return QueryHandler::queryValueToJSON($results, $values);
+        // title - authors - edition +/ publisher - tags
+        $filter = [
+            '$or' => [
+                ['title' => ['$regex' => $search, '$options' => 'i']],
+                ['authors' => ['$regex' => $search, '$options' => 'i']],
+                ['editionsList' => ['$regex' => $search, '$options' => 'i']],
+                ['editionsList.publisher' => ['$regex' => $search, '$options' => 'i']],
+                ['tags' => ['$regex' => $search, '$options' => 'i']]
+            ]
+        ];
+        //$query = $this->db->__get('books')->find($filter);
+        //need to find all editions of each books
+         $query = $this->db->books->aggregate([
+            ['$match' => $filter],
+            ['$skip' => $skip],
+            ['$limit' => 10],
+            ['$lookup' => [
+              'from' => 'editions',
+              'localField' => 'editions',
+              'foreignField' => 'id',
+              'as' => 'editionsList'
+            ]]
+         ]);
+        
+        return $query->toArray(); 
     }
 }
