@@ -29,7 +29,7 @@ class BooksController extends Controller
         return $this->books->findById($id);
     }
 
-    public function store(array $data): void
+    public function store(array $data): array
     {
         $data = $data['data'];
         
@@ -37,15 +37,21 @@ class BooksController extends Controller
         $tags = $data['tags'];
         $synopsis = $data['synopsis'];
         $title = $data['title'];
+        $published_at = $data['published_at'];
 
-        if (empty($authors) || empty($tags) || empty($synopsis) || empty($title)) {
-            $this->response->internalServerError('Missing data');
+        if (empty($authors) || empty($tags) || empty($synopsis) || empty($title) || empty($published_at)) {
+            return $this->response->internalServerError('Missing data');
+        }
+
+        if (count($data) > 5) {
+            return $this->response->internalServerError('Too many data');
         }
 
         $data['rating'] = 0;
         $data['editions'] = [];
 
         $this->books->create($data);
+        return $this->response->created();
     }
 
     public function update(array $data): void
