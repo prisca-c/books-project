@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Rating;
 use Core\Controller;
+use MongoDB\Model\BSONDocument;
 
 class RatingsController extends Controller
 {
@@ -20,7 +21,7 @@ class RatingsController extends Controller
         return $this->ratings->findAll();
     }
 
-    public function show(string $id): array
+    public function show(string $id): BSONDocument
     {
         return $this->ratings->findById($id);
     }
