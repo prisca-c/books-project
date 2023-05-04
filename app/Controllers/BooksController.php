@@ -142,27 +142,21 @@ class BooksController extends Controller
         $search = $data['search'];
         $page = $data['page'];
         $skip = ($page - 1) * 10;
-        // title - authors - edition +/ publisher - tags
-        $filter = [
-            '$or' => [
-                ['title' => ['$regex' => $search, '$options' => 'i']],
-                ['authors' => ['$regex' => $search, '$options' => 'i']],
-                ['editionsList' => ['$regex' => $search, '$options' => 'i']],
-                ['editionsList.publisher' => ['$regex' => $search, '$options' => 'i']],
-                ['tags' => ['$regex' => $search, '$options' => 'i']]
-            ]
-        ];
-        //$query = $this->db->__get('books')->find($filter);
-        //need to find all editions of each books
-         $query = $this->db->books->aggregate([
-            ['$match' => $filter],
-            ['$skip' => $skip],
-            ['$limit' => 10],
+        $query = $this->db->books->aggregate([
             ['$lookup' => [
-              'from' => 'editions',
-              'localField' => 'editions',
-              'foreignField' => 'id',
-              'as' => 'editionsList'
+                'from' => 'editions',
+                'localField' => 'editions',
+                'foreignField' => '_id',
+                'as' => 'editionsList',
+            ]],
+            ['$match' => [
+                '$or' => [
+                    ['title' => ['$regex' => $search, '$options' => 'i']],
+                    ['authors' => ['$regex' => $search, '$options' => 'i']],
+                    ['editionsList.format' => ['$regex' => $search, '$options' => 'i']],
+                    ['editionsList.publisher' => ['$regex' => $search, '$options' => 'i']],
+                    ['tags' => ['$regex' => $search, '$options' => 'i']]
+                ]
             ]]
          ]);
         
