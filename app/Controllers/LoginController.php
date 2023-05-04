@@ -91,25 +91,32 @@ class LoginController extends \Core\Controller
     public function logout (string $id): array
     {
         $cookie = ['name'=>'cookie-session','value'=>'', 'max-age'=>'0'];
+        setcookie('cookie-session', '', time() - 86400, '/', '', true, true);
         if(Cache::redis()->get('auth:users:' . $id) !== null){
             Cache::redis()->del('auth:users:' . $id);
         }
-        return $this->response->ok('Logout Successful', $cookie);
+        return $this->response->ok('Logout Successful');
     }
 
-    public function checkSession (): array
+    public function checkSession (): bool
     {
-        $cookie = ['name'=>'cookie-session','value'=>'', 'max-age'=>'0'];
-        $JWT = $_COOKIE('cookie-session');
-        if($JWT === null){
-            return $this->response->notFound('Not found', $cookie);
+        $JWT = ($_COOKIE['cookie-session'] ?? false);
+        if(!$JWT){
+            setcookie('cookie-session', '', time() - 86400, '/', '', true, true);
+            setcookie('user-id', '', time() - 86400, '/', '', true, false);
+            return false;
         }
 
-        $id = Auth::verifyToken($JWT);
-        if(!$id){
-            return $this->response->ok('No session', $cookie);
+        $tokenCheck = Auth::verifyToken($JWT);
+        if(!$tokenCheck){
+            setcookie('cookie-session', '', time() - 86400, '/', '', true, true);
+            setcookie('user-id', '', time() - 86400, '/', '', true, false);
+            return false;
         }
 
-        return $this->response->ok('Session exists');
+        $token = Auth::decodeToken($JWT);
+        $userId = $token['id'];
+        setcookie('user-id', $userId, time() + 86400, '/', '', true, false);
+        return true;
     }
 }
