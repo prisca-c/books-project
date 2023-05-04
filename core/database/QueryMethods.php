@@ -77,6 +77,6 @@ class QueryMethods extends QueryMethodsExtends
     public static function deleteById(string $table, string $id): void
     {
       $query = (new Database)->connect()->$table;
-      $query->deleteOne($id);
+      $query->deleteOne(['_id' => new \MongoDB\BSON\ObjectId($id)]);
     }
 }
