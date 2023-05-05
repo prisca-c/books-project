@@ -3,10 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Book;
-use App\Models\BookTagRelation;
-use App\Models\Tag;
 use Core\Controller;
-use Helpers\QueryHandler;
 use MongoDB\Model\BSONDocument;
 
 class BooksController extends Controller
