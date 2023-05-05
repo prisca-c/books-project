@@ -3,7 +3,9 @@
 namespace App\Controllers;
 
 use App\Models\Wishlist;
+use Core\Auth;
 use Core\Controller;
+use MongoDB\BSON\ObjectId;
 use MongoDB\Model\BSONDocument;
 
 class WishlistsController extends Controller
@@ -26,13 +28,57 @@ class WishlistsController extends Controller
         return $this->wishlists->findById($id);
     }
 
-    public function store(array $data): void
+    public function store(array $data): array
     {
-        $this->wishlists->create($data);
+        $data = $data['data'];
+        $edition = $data['edition'];
+        $token = $_COOKIE['cookie-session'];
+
+        $userId = Auth::decodeToken($token)['id'];
+
+        if (empty($edition)) {
+            return $this->response->internalServerError('Missing data');
+        }
+
+        if (count($data) > 1) {
+            return $this->response->internalServerError('Too many data');
+        }
+
+        $data['status'] = 'to-read';
+        $data['note'] = '';
+
+        $result = $this->wishlists->create($data);
+
+        $this->db->__get('users')->updateOne(
+            ['_id' => new ObjectId($userId)],
+            ['$push' => ['wishlists' => $result->getInsertedId()]]
+        );
+
+        $this->db->__get('editions')->updateOne(
+            ['_id' => new ObjectId($edition['_id']['$oid'])],
+            ['$push' => ['wishlists' => $result->getInsertedId()]]
+        );
+
+        return $this->response->created();
     }
 
-    public function update(array $data): void
+    public function update(array $data): array
     {
+        $data = $data['data'];
+        $id = $data['_id'];
+        $status = $data['status'];
+        $note = $data['note'];
+        $edition = $data['edition'];
+        $user = $data['user'];
+
+        if (empty($id) || empty($status) || empty($note) || empty($edition) || empty($user)) {
+            return $this->response->internalServerError('Missing data');
+        }
+
+        if (count($data) > 5) {
+            return $this->response->internalServerError('Too many data');
+        }
+
         $this->wishlists->update($data);
     }
 
@@ -41,15 +87,12 @@ class WishlistsController extends Controller
         $this->wishlists->deleteById($id);
     }
 
-    public function getCount(int|string $id): array
+    public function getUserWishlist(string $id): array
     {
-        $query = $this->db->prepare("
-            SELECT COUNT(DISTINCT wishlists.id) AS wishlists_count
-            FROM wishlists
-            WHERE wishlists.users_id = :id");
-        $query->bindParam(':id', $id);
-        $query->execute();
-
-        return $query->fetch();
+        $wishlist = $this->db->__get('wishlists')->findOne(['user' => new ObjectId($id)])->toArray();
+        if (empty($wishlist)) {
+            return $this->response->notFound();
+        }
+        return $wishlist;
     }
 }
