@@ -87,12 +87,26 @@ class WishlistsController extends Controller
         $this->wishlists->deleteById($id);
     }
 
-    public function getUserWishlist(string $id): array
+    public function getUserWishlists(string $id): array
     {
-        $wishlist = $this->db->__get('wishlists')->findOne(['user' => new ObjectId($id)])->toArray();
-        if (empty($wishlist)) {
-            return $this->response->notFound();
-        }
-        return $wishlist;
+        $user = $this->db->__get('users')->findOne(['_id' => new ObjectId($id)]);
+
+        $wishlist = $this->db->__get('wishlists')->find(
+            ['user._id' => new ObjectId($id)],
+            ['projection' => 
+                [
+                    'user' => 0,
+                    'edition.wishlists' => 0,
+                    'edition.libraries' => 0,
+                ],
+            ]
+        )->toArray();
+
+        $payload = [
+            'count' => count($wishlist),
+            'wishlist' => $wishlist
+        ];
+
+        return $payload;
     }
 }
