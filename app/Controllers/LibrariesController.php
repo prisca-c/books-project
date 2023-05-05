@@ -122,4 +122,26 @@ class LibrariesController extends Controller
 
         return $payload;
     }
+
+    public function getUserCurrentReading(string $id): array
+    {
+        $user = $this->db->__get('users')->findOne(['_id' => new ObjectId($id)]);
+        $libraries = $this->db->__get('libraries')->find(
+            ['user._id' => new ObjectId($user['_id']), 'status' => 'reading'],
+            ['projection' => 
+                [
+                    'user' => 0,
+                    'edition.wishlists' => 0,
+                    'edition.libraries' => 0
+                ]
+            ]
+        )->toArray();
+
+        $payload = [
+            'count' => count($libraries),
+            'libraries' => $libraries
+        ];
+
+        return $payload;
+    }
 }

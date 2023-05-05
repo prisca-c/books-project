@@ -23,7 +23,7 @@ class Routes
 
         $routes->get('/users/id/:id/wishlist/count', 'Wishlists#getCount', true);
         $routes->get('/users/id/:id/libraries/current/count', 'Libraries#getLibraryCurrentReadingCount', true);
-        $routes->get('/users/ratings', 'Ratings#getUserRatings', true); // TODO: create a method
+        $routes->get('/users/id/:id/libraries/current', 'Libraries#getUserCurrentReading', true);
         // TODO:
         // Routes: Books/rating |
 
