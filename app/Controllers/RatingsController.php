@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Rating;
+use Core\Auth;
 use Core\Controller;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Model\BSONDocument;
@@ -33,9 +34,11 @@ class RatingsController extends Controller
         $rating = $data['rating'];
         $review = $data['review'];
         $book = $data['book'];
-        $user = $data['user'];
+        $token = $_COOKIE['cookie-session'];
 
-        if (empty($rating) || empty($review) || empty($book) || empty($user)) {
+        $userId = Auth::decodeToken($token)['id'];
+
+        if (empty($rating) || empty($review) || empty($book)) {
             return $this->response->internalServerError('Missing data');
         }
 
@@ -52,20 +55,20 @@ class RatingsController extends Controller
         );
 
         $this->db->__get('users')->updateOne(
-            ['_id' => new ObjectId($user['_id']['$oid'])],
+            ['_id' => new ObjectId($userId)],
             ['$push' => ['reviews.ratings' => $rating->getInsertedId()]]
         );
 
         // get rating average from a book in ratings collection
         $ratingAvg = $this->db->ratings->aggregate([
-            ['$match' => ['book' => new ObjectId($book['_id']['$oid'])]],
+            ['$match' => ['book' => $book]],
             ['$group' => ['_id' => '$book', 'average' => ['$avg' => '$rating']]]
-        ]);
+        ])->toArray()[0];
 
         // update book.rating
         $this->db->__get('books')->updateOne(
             ['_id' => new ObjectId($book['_id']['$oid'])],
-            ['$set' => ['rating' => $ratingAvg->toArray()[0]->average]]
+            ['$set' => ['reviews.rating' => round($ratingAvg->average,1)]]
         );
 
         return $this->response->created();
