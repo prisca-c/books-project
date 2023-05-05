@@ -4,7 +4,6 @@ namespace Routes;
 
 use Core\Router;
 use Exception;
-use PDOException;
 
 class Routes
 {
@@ -18,14 +17,10 @@ class Routes
         $routes->resources('/wishlists', 'Wishlists', true);
         $routes->resources('/users', 'Users', true);
         $routes->resources('/editions', 'Editions', true);
-        $routes->get('/users/id/:id/wishlist/count', 'Wishlists#getCount', true);
-        $routes->get('/users/id/:id/libraries/current/count', 'Libraries#getLibraryCurrentReadingCount', true);
 
-        $routes->get('/users/id/:id/wishlist/count', 'Wishlists#getCount', true);
-        $routes->get('/users/id/:id/libraries/current/count', 'Libraries#getLibraryCurrentReadingCount', true);
+        $routes->get('/users/id/:id/wishlists', 'Wishlists#getUserWishlists', true);
+        $routes->get('/users/id/:id/libraries', 'Libraries#getUserLibraries', true);
         $routes->get('/users/id/:id/libraries/current', 'Libraries#getUserCurrentReading', true);
-        // TODO:
-        // Routes: Books/rating |
 
         $routes->post('/update/password', 'Profile#updatePassword', true);
         $routes->post('/update/details', 'Profile#updateDetails', true);
@@ -39,9 +34,6 @@ class Routes
         try {
             $routes->run();
         }
-//        catch (PDOException $e) {
-//            echo 'Something went wrong.';
-//        }
         catch (Exception $e) {
             $json = json_encode([
                 'code' => $e->getCode(),
