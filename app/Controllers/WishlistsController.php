@@ -44,8 +44,9 @@ class WishlistsController extends Controller
             return $this->response->internalServerError('Too many data');
         }
 
-        $data['status'] = 'to-read';
-        $data['note'] = '';
+        $user = $this->db->__get('users')->findOne(['_id' => new ObjectId($userId)]);
+        
+        $data['user'] = $user;
 
         $result = $this->wishlists->create($data);
 
@@ -66,18 +67,20 @@ class WishlistsController extends Controller
     {
         $data = $data['data'];
         $id = $data['_id'];
-        $status = $data['status'];
-        $note = $data['note'];
         $edition = $data['edition'];
-        $user = $data['user'];
-
-        if (empty($id) || empty($status) || empty($note) || empty($edition) || empty($user)) {
+        
+        if (empty($edition) || empty($user)) {
             return $this->response->internalServerError('Missing data');
         }
 
-        if (count($data) > 5) {
+        if (count($data) > 2) {
             return $this->response->internalServerError('Too many data');
         }
+
+        $token = $_COOKIE['cookie-session'];
+        $userId = Auth::decodeToken($token)['id'];
+        
+        $data['user'] = $this->db->__get('users')->findOne(['_id' => new ObjectId($userId)]);
 
         $this->wishlists->update($data);
     }
