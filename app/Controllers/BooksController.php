@@ -47,7 +47,7 @@ class BooksController extends Controller
             return $this->response->internalServerError('Too many data');
         }
 
-        $data['rating'] = 0;
+        $data['reviews'] = ['rating' => 0, 'ratings' => []];
         $data['editions'] = [];
 
         $this->books->create($data);
@@ -147,17 +147,19 @@ class BooksController extends Controller
                 'from' => 'editions',
                 'localField' => 'editions',
                 'foreignField' => '_id',
-                'as' => 'editionsList',
+                'as' => 'editionsList'
             ]],
             ['$match' => [
                 '$or' => [
                     ['title' => ['$regex' => $search, '$options' => 'i']],
                     ['authors' => ['$regex' => $search, '$options' => 'i']],
+                    ['tags' => ['$regex' => $search, '$options' => 'i']],
                     ['editionsList.format' => ['$regex' => $search, '$options' => 'i']],
-                    ['editionsList.publisher' => ['$regex' => $search, '$options' => 'i']],
-                    ['tags' => ['$regex' => $search, '$options' => 'i']]
+                    ['editionsList.publisher' => ['$regex' => $search, '$options' => 'i']]
                 ]
-            ]]
+            ]],
+            ['$limit' => 10],
+            ['$skip' => $skip]
          ]);
         
         return $query->toArray(); 
