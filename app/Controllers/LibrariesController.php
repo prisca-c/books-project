@@ -104,44 +104,39 @@ class LibrariesController extends Controller
     public function getUserLibraries(string $id): array
     {
         $user = $this->db->__get('users')->findOne(['_id' => new ObjectId($id)]);
-        $libraries = $this->db->__get('libraries')->find(
-            ['user._id' => new ObjectId($user['_id'])],
-            ['projection' => 
-                [
-                    'user' => 0,
-                    'edition.wishlists' => 0,
-                    'edition.libraries' => 0
-                ]
-            ]
-        )->toArray();
+        $libraries = $this->db->libraries->aggregate([
+            ['$match' => ['user._id' => new ObjectId($id)]],
+            ['$project' => [
+                'user' => 0,
+                'edition.wishlists' => 0,
+                'edition.libraries' => 0
+            ]],
+            ['$facet' => [
+                'count' => [['$count' => 'total']],
+                'libraries' => []
+            ]]
+        ]);
 
-        $payload = [
-            'count' => count($libraries),
-            'libraries' => $libraries
-        ];
-
-        return $payload;
+        return $libraries->toArray();
     }
 
     public function getUserCurrentReading(string $id): array
     {
-        $user = $this->db->__get('users')->findOne(['_id' => new ObjectId($id)]);
-        $libraries = $this->db->__get('libraries')->find(
-            ['user._id' => new ObjectId($user['_id']), 'status' => 'reading'],
-            ['projection' => 
-                [
-                    'user' => 0,
-                    'edition.wishlists' => 0,
-                    'edition.libraries' => 0
-                ]
-            ]
-        )->toArray();
+        $user = $this->db->users->findOne(['_id' => new ObjectId($id)]);
+        $libraries = $this->db->libraries->aggregate([
+            ['$match' => ['user._id' => new ObjectId($id)]],
+            ['$project' => [
+                'user' => 0,
+                'edition.wishlists' => 0,
+                'edition.libraries' => 0
+            ]],
+            ['$match' => ['status' => 'reading']],
+            ['$facet' => [
+                'count' => [['$count' => 'total']],
+                'libraries' => []
+            ]]
+        ]);
 
-        $payload = [
-            'count' => count($libraries),
-            'libraries' => $libraries
-        ];
-
-        return $payload;
+        return $libraries->toArray();
     }
 }

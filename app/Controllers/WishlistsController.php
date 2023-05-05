@@ -94,7 +94,7 @@ class WishlistsController extends Controller
     {
         $user = $this->db->__get('users')->findOne(['_id' => new ObjectId($id)]);
 
-        $wishlist = $this->db->__get('wishlists')->find(
+        $wishldist = $this->db->__get('wishlists')->find(
             ['user._id' => new ObjectId($id)],
             ['projection' => 
                 [
@@ -105,11 +105,21 @@ class WishlistsController extends Controller
             ]
         )->toArray();
 
-        $payload = [
-            'count' => count($wishlist),
-            'wishlist' => $wishlist
-        ];
+        //same above excpet with aggregate
+        $wishlist = $this->db->wishlists->aggregate([
+            ['$match' => ['user._id' => new ObjectId($id)]],
+            ['$project' => [
+                'user' => 0,
+                'edition.wishlists' => 0,
+                'edition.libraries' => 0,
+            ]],
+            ['$facet' => [
+                'count' => [['$count' => 'total']],
+                'wishlist' => []
+            ]]
+        ])->toArray();
 
-        return $payload;
+
+        return $wishlist;
     }
 }
