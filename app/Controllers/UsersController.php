@@ -31,6 +31,9 @@ class UsersController extends Controller
         if ($username === '') {
             $this->response->internalServerError('Username cannot be empty');
         }
+        $data['libraries'] = [];
+        $data['wishlists'] = [];
+
         return $this->users->create($data);
     }
 
