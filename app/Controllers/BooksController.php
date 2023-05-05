@@ -139,9 +139,11 @@ class BooksController extends Controller
 
     public function searchBooks(array $data): array
     {
+        $data = $data['data'];
         $search = $data['search'];
         $page = $data['page'];
         $skip = ($page - 1) * 10;
+
         $query = $this->db->books->aggregate([
             ['$lookup' => [
                 'from' => 'editions',
@@ -159,7 +161,8 @@ class BooksController extends Controller
                 ]
             ]],
             ['$limit' => 10],
-            ['$skip' => $skip]
+            ['$skip' => $skip],
+            ['$sort' => ['published_at' => -1]]
          ]);
         
         return $query->toArray(); 
