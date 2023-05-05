@@ -47,7 +47,7 @@ class BooksController extends Controller
             return $this->response->internalServerError('Too many data');
         }
 
-        $data['reviews'] = ['rating' => 0, 'ratings' => []];
+        $data['reviews'] = ['rating' => null, 'ratings' => []];
         $data['editions'] = [];
 
         $this->books->create($data);
