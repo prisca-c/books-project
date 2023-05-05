@@ -18,6 +18,8 @@ class Routes
         $routes->resources('/users', 'Users', true);
         $routes->resources('/editions', 'Editions', true);
 
+        $routes->get('/authors/name/:name/books', 'Authors#getAuthorBooks', true);
+
         $routes->get('/users/id/:id/wishlists', 'Wishlists#getUserWishlists', true);
         $routes->get('/users/id/:id/libraries', 'Libraries#getUserLibraries', true);
         $routes->get('/users/id/:id/libraries/current', 'Libraries#getUserCurrentReading', true);
