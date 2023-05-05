@@ -45,12 +45,3 @@ class Routes
         }
     }
 }
-
-//
-//class LibraryType {
-//
-//}
-//
-//function library(array $library) : LibraryType {
-//    return new LibraryType($library);
-//}
