@@ -3,7 +3,9 @@
 namespace App\Controllers;
 
 use App\Models\Library;
+use Core\Auth;
 use Core\Controller;
+use MongoDB\BSON\ObjectId;
 use MongoDB\Model\BSONDocument;
 
 class LibrariesController extends Controller
@@ -26,30 +28,98 @@ class LibrariesController extends Controller
         return $this->libraries->findById($id);
     }
 
-    public function store(array $data): void
+    public function store(array $data): array
     {
-        $this->libraries->create($data);
+        $data = $data['data'];
+        $edition = $data['edition'];
+        $token = $_COOKIE['cookie-session'];
+
+        $userId = Auth::decodeToken($token)['id'];
+
+        if (empty($edition)) {
+            return $this->response->internalServerError('Missing data');
+        }
+
+        if (count($data) > 1) {
+            return $this->response->internalServerError('Too many data');
+        }
+
+        $data['status'] = 'to-read';
+        $data['note'] = '';
+        $data['user'] = $this->db->__get('users')->findOne(['_id' => new ObjectId($userId)]);
+
+        $result = $this->libraries->create($data);
+
+        $this->db->__get('users')->updateOne(
+            ['_id' => new ObjectId($userId)],
+            ['$push' => ['libraries' => $result->getInsertedId()]]
+        );
+
+        $this->db->__get('editions')->updateOne(
+            ['_id' => new ObjectId($edition['_id']['$oid'])],
+            ['$push' => ['libraries' => $result->getInsertedId()]]
+        );
+
+        return $this->response->created();
     }
 
-    public function update(array $data): void
+    public function update(array $data): array
     {
+        $data = $data['data'];
+        $id = $data['_id'];
+        $edition = $data['edition'];
+
+        if (empty($id) || empty($edition)) {
+            return $this->response->internalServerError('Missing data');
+        }
+
+        if (count($data) > 2) {
+            return $this->response->internalServerError('Too many data');
+        }
+
+        $token = $_COOKIE['cookie-session'];
+        $userId = Auth::decodeToken($token)['id'];
+
+        $user = $this->db->__get('users')->findOne(['_id' => new ObjectId($userId)]);
+        $data['user'] = $user;
+        
         $this->libraries->update($data);
     }
 
     public function delete(string $id): void
     {
+        $this->db->__get('editions')->updateOne(
+            ['libraries' => new ObjectId($id)],
+            ['$pull' => ['libraries' => new ObjectId($id)]]
+        );
+
+        $this->db->__get('users')->updateOne(
+            ['libraries' => new ObjectId($id)],
+            ['$pull' => ['libraries' => new ObjectId($id)]]
+        );
+
         $this->libraries->deleteById($id);
     }
 
-    public function getLibraryCurrentReadingCount(int|string $id): array
+    public function getUserLibraries(string $id): array
     {
-        $query = $this->db->prepare("
-            SELECT COUNT(DISTINCT libraries.id) AS libraries_count
-            FROM libraries
-            WHERE libraries.status_id = 2 AND libraries.users_id = :id");
-        $query->bindParam(':id', $id);
-        $query->execute();
+        $user = $this->db->__get('users')->findOne(['_id' => new ObjectId($id)]);
+        $libraries = $this->db->__get('libraries')->find(
+            ['user._id' => new ObjectId($user['_id'])],
+            ['projection' => 
+                [
+                    'user' => 0,
+                    'edition.wishlists' => 0,
+                    'edition.libraries' => 0
+                ]
+            ]
+        )->toArray();
 
-        return $query->fetch();
+        $payload = [
+            'count' => count($libraries),
+            'libraries' => $libraries
+        ];
+
+        return $payload;
     }
 }
